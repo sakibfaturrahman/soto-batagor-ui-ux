@@ -1,29 +1,28 @@
-"use report";
+"use client";
 
 import Image from "next/image";
-import { motion, Variants, Easing } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 export default function Hero() {
-  // Variasi animasi untuk kemudahan kontrol (Reduce Memory Load & Maintainability)
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2, // Efek muncul berurutan yang halus
+        staggerChildren: 0.15,
       },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { x: -30, opacity: 0 },
     visible: {
-      y: 0,
+      x: 0,
       opacity: 1,
       transition: {
-        duration: 0.6,
-        ease: [0.215, 0.61, 0.355, 1] as Easing, // Power3 ease-out untuk kesan premium
+        duration: 0.7,
+        ease: [0.215, 0.61, 0.355, 1],
       },
     },
   };
@@ -38,10 +37,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="w-full min-h-screen bg-[#FDFBF7] flex items-center justify-center p-4 md:p-8 font-sans">
-      {/* Container Utama dengan Sudut Melengkung Lebar seperti Image_73cd35.png */}
-      <div className="relative w-full max-w-7xl h-[85vh] rounded-[2rem] overflow-hidden shadow-sm flex items-center justify-center">
-        {/* Komponen Gambar Latar Belakang Statis dengan Animasi Pemuatan */}
+    <section className="w-full min-h-screen bg-[#FDFBF7] flex items-center justify-center px-2 sm:px-4 py-6">
+      <div className="relative w-full max-w-[96vw] h-[85vh] rounded-[2rem] overflow-hidden shadow-sm flex items-center justify-start">
+        
+        {/* Komponen Gambar Latar Belakang */}
         <motion.div
           className="absolute inset-0 w-full h-full"
           initial="hidden"
@@ -55,49 +54,83 @@ export default function Hero() {
             priority
             className="object-cover"
           />
-          {/* Overlay gelap halus untuk menjamin keterbacaan teks (Visibility of System Status) */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent" />
         </motion.div>
 
-        {/* Konten Utama di Tengah Halaman */}
+        {/* Konten Utama */}
         <motion.div
-          className="relative z-10 max-w-3xl text-center px-6 flex flex-col items-center"
+          className="relative z-10 max-w-2xl text-left px-6 md:px-16 flex flex-col items-start"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
         >
-          {/* Headline Utama - Masif, Semibold (bukan Black), dan Tanpa Uppercase */}
+          {/* Judul Utama */}
           <motion.h1
-            className="text-6xl md:text-8xl font-semibold text-white tracking-wide drop-shadow-sm mb-4 selection:bg-[#8C6239]"
+            className="text-6xl md:text-8xl font-semibold text-white tracking-wide drop-shadow-sm selection:bg-[#8C6239]"
             variants={itemVariants}
           >
             Batagor
           </motion.h1>
 
-          {/* Deskripsi - Rapi, Mudah Dibaca, Tanpa Huruf Italic yang Merusak Estetika */}
-          <motion.p
-            className="text-base md:text-lg text-neutral-200 font-normal leading-relaxed mb-8 max-w-xl text-center"
+          {/* ORNAMEN BARU: Garis Gelombang Mengalir Tepat di Bawah Teks Judul */}
+          <motion.div 
+            className="w-48 h-6 mb-6 mt-2 relative overflow-hidden"
             variants={itemVariants}
           >
-            Menikmati kelezatan autentik kuliner tradisional, perpaduan sempurna
-            tahu lembut dan adonan ikan tenggiri berbalut renyahnya pangsit
-            dengan siraman saus kacang yang gurih.
+            <svg
+              className="w-full h-full"
+              viewBox="0 0 200 24"
+              fill="none"
+              preserveAspectRatio="none"
+            >
+              <motion.path
+                initial={{ pathLength: 0, pathOffset: 0 }}
+                animate={{
+                  pathLength: [0, 1, 1],
+                  pathOffset: [0, 0, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  ease: "linear",
+                  repeat: Infinity,
+                  repeatDelay: 0.5,
+                }}
+                d="M 0,12 Q 25,2 50,12 T 100,12 T 150,12 T 200,12"
+                stroke="#8C6239" // Aksen warna cokelat saus kacang yang lembut
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+            </svg>
+          </motion.div>
+
+          {/* Deskripsi */}
+          <motion.p
+            className="text-base md:text-lg text-neutral-200 font-normal leading-relaxed mb-8 max-w-lg text-left"
+            variants={itemVariants}
+          >
+            Menikmati kelezatan warisan kuliner lokal yang konsisten menjaga
+            kualitas rasa selama 5 tahun. Perpaduan adonan renyah ikan tenggiri
+            asli dengan siraman bumbu kacang kental yang paling nikmat disantap
+            selagi hangat[cite: 1].
           </motion.p>
 
-          {/* Kelompok Tombol Aksi - Interaktif dengan Mikro-Interaksi */}
-          <motion.div
-            className="flex flex-row items-center gap-4"
-            variants={itemVariants}
-          >
-            {/* Tombol Utama (Aksen Penuh) */}
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+          {/* Tombol Aksi */}
+          <div className="flex flex-row items-center gap-4">
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              variants={itemVariants}
+            >
               <Button className="bg-[#8C6239] hover:bg-[#734F2E] text-white font-medium px-8 py-6 rounded-full text-sm tracking-wide transition-colors shadow-md">
                 Jelajahi rasa
               </Button>
             </motion.div>
 
-            {/* Tombol Kedua (Outline) */}
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
+              variants={itemVariants}
+            >
               <Button
                 variant="outline"
                 className="bg-transparent hover:bg-white/10 text-white border-white/60 hover:text-white font-medium px-8 py-6 rounded-full text-sm tracking-wide transition-colors"
@@ -105,7 +138,7 @@ export default function Hero() {
                 Cerita kami
               </Button>
             </motion.div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
