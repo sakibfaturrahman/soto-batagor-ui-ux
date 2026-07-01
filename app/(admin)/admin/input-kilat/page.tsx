@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, RotateCcw, CheckCircle2, Utensils } from "lucide-react";
+import { motion, AnimatePresence, Variants } from "framer-motion";
+import {
+  Plus,
+  RotateCcw,
+  CheckCircle2,
+  Utensils,
+  Sun,
+  Sparkles,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function InputKilat() {
@@ -41,10 +48,76 @@ export default function InputKilat() {
     setLastAction(null);
   };
 
+  // Varian animasi futuristik untuk sapaan pembuka
+  const greetingVariants = {
+    hidden: { opacity: 0, x: -20 },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] },
+    },
+  };
+
   return (
     <div className="flex flex-col gap-8 pb-12 font-sans select-none relative">
-      {/* HEADER SECTION */}
-      <div className="text-left px-1">
+      {/* HEADER MENYAPA INTERAKTIF & FUTURISTIK (Ambient Greeting Badge) */}
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={greetingVariants}
+        className="w-full bg-white border border-neutral-100 rounded-[2rem] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.01)] flex items-center justify-between relative overflow-hidden group"
+      >
+        {/* Efek Ambient Glow Bergerak di Latar Belakang (Idle Animation) */}
+        <motion.div
+          animate={{
+            scale: [1, 1.15, 1],
+            opacity: [0.03, 0.07, 0.03],
+            x: [0, 20, 0],
+            y: [0, -10, 0],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -right-12 -top-12 w-48 h-48 bg-[#8C6239] rounded-full blur-2xl pointer-events-none"
+        />
+
+        <div className="flex items-center gap-4 relative z-10 text-left">
+          {/* Lingkaran Ikon dengan Rotasi Lambat Kontinu */}
+          <div className="relative flex items-center justify-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 rounded-2xl bg-[#8C6239]/5 border border-dashed border-[#8C6239]/20"
+            />
+            <div className="p-3.5 rounded-2xl bg-[#8C6239]/10 text-[#8C6239] relative z-10 m-1">
+              <Sun size={20} className="stroke-[1.8]" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-0.5">
+            {/* Animasi teks menyapa bertahap */}
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-2 py-0.5 rounded-md">
+                sistem aktif
+              </span>
+              <motion.div
+                animate={{ opacity: [0.4, 1, 0.4] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Sparkles size={12} className="text-amber-400 fill-amber-400" />
+              </motion.div>
+            </div>
+            <h1 className="text-lg font-semibold text-[#4A3B32] lowercase">
+              selamat bertugas kembali, abah
+            </h1>
+            <p className="text-[10px] text-neutral-400 font-light lowercase">
+              panel siap menerima input. semua data tersinkronisasi otomatis ke
+              ringkasan usaha.
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* HEADER SECTION BAWAHAN */}
+      <div className="text-left px-1 mt-2">
         <h2 className="text-sm font-semibold text-[#4A3B32] lowercase tracking-wide">
           catat jualan kilat
         </h2>
@@ -54,8 +127,8 @@ export default function InputKilat() {
         </p>
       </div>
 
-      {/* DUA TOMBOL UTAMA SAKLAR KILAT (Kombinasi Menu Sederhana Abah) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mt-4">
+      {/* DUA TOMBOL UTAMA SAKLAR KILAT */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mx-auto mt-2">
         {/* KARTU 1: SATU PORSI PENUH */}
         <motion.div
           onClick={() => handleIncrement("penuh")}
@@ -71,10 +144,9 @@ export default function InputKilat() {
               satu porsi penuh
             </span>
             <span className="text-xs text-neutral-400 font-light lowercase">
-              rp 10.000[cite: 1]
+              rp 10.000
             </span>
           </div>
-          {/* Angka Counter Besar (Visibility of System Status) */}
           <div className="text-5xl font-bold text-[#8C6239] my-2">
             {porsiPenuh}
           </div>
@@ -99,10 +171,9 @@ export default function InputKilat() {
               setengah porsi
             </span>
             <span className="text-xs text-neutral-400 font-light lowercase">
-              rp 5.000[cite: 1]
+              rp 5.000
             </span>
           </div>
-          {/* Angka Counter Besar */}
           <div className="text-5xl font-bold text-[#8C6239] my-2">
             {setengahPorsi}
           </div>
@@ -113,7 +184,7 @@ export default function InputKilat() {
         </motion.div>
       </div>
 
-      {/* EMERGENCY BUTTON: PEMBALIKAN AKSI JIKA SALAH KLIK (Reversal of Actions) */}
+      {/* EMERGENCY BUTTON */}
       <div className="flex justify-center mt-6">
         <Button
           disabled={!lastAction}
@@ -126,7 +197,7 @@ export default function InputKilat() {
         </Button>
       </div>
 
-      {/* POP-UP FEEDBACK NOTIFIKASI OTOMATIS (Action Feedback) */}
+      {/* POP-UP FEEDBACK NOTIFIKASI OTOMATIS */}
       <AnimatePresence>
         {showNotification && (
           <motion.div
