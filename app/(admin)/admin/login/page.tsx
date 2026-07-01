@@ -55,21 +55,50 @@ export default function AdminLogin() {
 
   return (
     <div className="w-full min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-4 md:p-6 font-sans select-none relative overflow-hidden">
-      {/* TOMBOL PEMICU MODAL (Floating Action Button - Hanya muncul jika helper ditutup) */}
+      {/* 1. POP-UP MODAL PANDUAN AKUN: SEKARANG DI ATAS (Responsif di Atas Layar) */}
       <AnimatePresence>
-        {!showHelper && (
-          <motion.button
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            onClick={() => setShowHelper(true)}
-            className="fixed top-4 right-4 z-50 bg-[#4A3B32] text-amber-400 p-3 rounded-full shadow-lg border border-white/10 flex items-center gap-2 text-xs font-medium lowercase"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+        {showHelper && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-4 left-4 right-4 md:left-auto md:top-6 md:right-6 z-50 w-auto md:w-full md:max-w-xs bg-[#4A3B32] text-white p-5 rounded-2xl shadow-xl border border-white/5 flex flex-col gap-3 text-left"
           >
-            <HelpCircle size={16} />
-            <span className="hidden sm:inline text-white">bantuan akun</span>
-          </motion.button>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold lowercase">
+                <HelpCircle size={14} />
+                <span>panduan demo dosen</span>
+              </div>
+              <button
+                onClick={() => setShowHelper(false)}
+                className="text-neutral-400 hover:text-white text-[11px] font-medium transition-colors bg-white/5 px-2.5 py-1 rounded-lg border border-white/5 md:bg-transparent md:p-0 md:border-none"
+              >
+                tutup
+              </button>
+            </div>
+
+            <p className="text-[10px] text-neutral-300 font-light leading-relaxed lowercase">
+              klik tombol uji coba di bawah untuk mengisi formulir secara instan
+              dan langsung dialihkan ke ruang panel admin.
+            </p>
+
+            {/* Tombol CTA Pengisian Otomatis */}
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                onClick={handleAutoLogin}
+                disabled={isAutoLoggingIn}
+                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[11px] py-4 h-10 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-colors"
+              >
+                <span>pilih akun & masuk instan</span>
+                <ArrowRight size={12} className="mt-0.5" />
+              </Button>
+            </motion.div>
+
+            <div className="bg-black/10 p-2.5 rounded-xl border border-white/5 flex flex-col gap-0.5 font-mono text-[9px] text-neutral-400">
+              <div>user: abah_batagor</div>
+              <div>pass: tenggiri5tahun</div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
 
@@ -174,50 +203,21 @@ export default function AdminLogin() {
         </form>
       </motion.div>
 
-      {/* POP-UP MODAL INFORMASI PANDUAN DEMO DOSEN (Responsif di Mobile & Desktop) */}
+      {/* 2. TOMBOL PEMICU BANTUAN: SEKARANG DI BAWAH (Melayang di Kanan Bawah) */}
       <AnimatePresence>
-        {showHelper && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+        {!showHelper && (
+          <motion.button
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="fixed bottom-4 left-4 right-4 md:left-auto md:bottom-6 md:right-6 z-50 w-auto md:w-full md:max-w-xs bg-[#4A3B32] text-white p-5 rounded-2xl shadow-xl border border-white/5 flex flex-col gap-3 text-left"
+            exit={{ opacity: 0, y: 20, scale: 0.8 }}
+            onClick={() => setShowHelper(true)}
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 bg-[#4A3B32] text-amber-400 p-3.5 rounded-xl shadow-lg border border-white/10 flex items-center gap-2 text-xs font-medium lowercase"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
           >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold lowercase">
-                <HelpCircle size={14} />
-                <span>panduan demo dosen</span>
-              </div>
-              <button
-                onClick={() => setShowHelper(false)}
-                className="text-neutral-400 hover:text-white text-[11px] font-medium transition-colors bg-white/5 px-2.5 py-1 rounded-lg border border-white/5 md:bg-transparent md:p-0 md:border-none"
-              >
-                tutup
-              </button>
-            </div>
-
-            <p className="text-[10px] text-neutral-300 font-light leading-relaxed lowercase">
-              klik tombol uji coba di bawah untuk mengisi formulir secara instan
-              dan langsung dialihkan ke ruang panel admin.
-            </p>
-
-            {/* Tombol CTA Pengisian Otomatis */}
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button
-                onClick={handleAutoLogin}
-                disabled={isAutoLoggingIn}
-                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[11px] py-4 h-10 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-colors"
-              >
-                <span>pilih akun & masuk instan</span>
-                <ArrowRight size={12} className="mt-0.5" />
-              </Button>
-            </motion.div>
-
-            <div className="bg-black/10 p-2.5 rounded-xl border border-white/5 flex flex-col gap-0.5 font-mono text-[9px] text-neutral-400">
-              <div>user: abah_batagor</div>
-              <div>pass: tenggiri5tahun</div>
-            </div>
-          </motion.div>
+            <HelpCircle size={15} />
+            <span className="text-white">bantuan akun</span>
+          </motion.button>
         )}
       </AnimatePresence>
     </div>
