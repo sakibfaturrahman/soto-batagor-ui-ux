@@ -176,7 +176,7 @@ export default function InputKilatDanMenu() {
   };
 
   return (
-    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-26">
+    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-5 md:mt-22">
       {/* BAR NAVIGASI SWITCHER SLIDER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-neutral-100 pb-6 text-left">
         <div className="flex flex-col gap-1">

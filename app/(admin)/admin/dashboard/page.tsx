@@ -74,8 +74,7 @@ const textFadeVariants: Variants = {
 
 export default function AdminDashboard() {
   return (
-    // Membatasi max-w-5xl agar konten mengelompok padat di tengah dan tidak renggang berjauhan
-    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-26">
+    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-5 md:mt-22">
       {/* ================= HEADER SAPAAN INTERAKTIF FUTURISTIK ================= */}
       <motion.div
         variants={greetingVariants}
@@ -83,7 +82,6 @@ export default function AdminDashboard() {
         animate="show"
         className="w-full bg-white border border-neutral-100 p-8 md:p-10 rounded-[2.5rem] shadow-[0_4px_30px_rgba(0,0,0,0.01)] flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-left relative overflow-hidden group"
       >
-        {/* Ornamen Partikel Ambien */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
           {[...Array(3)].map((_, i) => (
             <motion.div
@@ -109,7 +107,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Konten Teks Kiri */}
         <div className="flex items-center gap-5 relative z-10 flex-1 min-w-0">
           <motion.div
             className="p-4 bg-[#8C6239]/10 text-[#8C6239] rounded-2xl hidden xs:block relative overflow-hidden shadow-inner border border-[#8C6239]/5 shrink-0"
@@ -221,9 +218,9 @@ export default function AdminDashboard() {
         </motion.div>
       </motion.div>
 
-      {/* ================= 2. STRUKTUR UTAMA TUMPUIAN VERTIKAL (LEBIH PADAT) ================= */}
+      {/* ================= 2. STRUKTUR UTAMA TUMPUKAN VERTIKAL ================= */}
       <div className="flex flex-col gap-8">
-        {/* BAGIAN UTAMA A: PAPAN PROGRESS PORSI TERJUAL (Lebih Tinggi & Besar) */}
+        {/* BAGIAN UTAMA A: PAPAN PROGRESS PORSI TERJUAL */}
         <div className="flex flex-col gap-4">
           <div className="text-left px-1">
             <h2 className="text-base font-semibold text-[#4A3B32] tracking-wide">
@@ -246,7 +243,6 @@ export default function AdminDashboard() {
                 variants={itemVariants}
                 className="flex flex-col sm:grid sm:grid-cols-12 bg-white border border-neutral-100 rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.01)] items-start sm:items-center gap-4 sm:gap-0 hover:border-[#8C6239]/20 transition-all"
               >
-                {/* Info Varian */}
                 <div className="sm:col-span-4 flex items-center gap-4 text-left w-full">
                   <div className="p-2.5 bg-[#8C6239]/5 rounded-xl text-[#8C6239] shrink-0">
                     <UtensilsCrossed size={16} />
@@ -261,7 +257,6 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Grafik Batang */}
                 <div className="sm:col-span-4 w-full pr-0 sm:pr-8">
                   <div className="w-full h-2.5 bg-neutral-100 rounded-full overflow-hidden">
                     <motion.div
@@ -273,7 +268,6 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                {/* Kuantitas Terjual */}
                 <div className="sm:col-span-2 text-left text-sm font-medium text-neutral-600 w-full sm:pl-4">
                   <span className="inline sm:hidden text-neutral-400 font-normal">
                     Terjual:{" "}
@@ -281,7 +275,6 @@ export default function AdminDashboard() {
                   {porsi.terjual}
                 </div>
 
-                {/* Subtotal */}
                 <div className="sm:col-span-2 text-left sm:text-right text-sm font-semibold text-emerald-600 w-full">
                   <span className="inline sm:hidden text-neutral-400 font-normal">
                     Subtotal:{" "}
@@ -293,16 +286,17 @@ export default function AdminDashboard() {
           </motion.div>
         </div>
 
-        {/* BAGIAN UTAMA B: DUA SUB-KOMPONEN DIJAJAR HORIZONTAL (Biar Seimbang) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          {/* KANAN PANDUAN 1: Distribusi Alur Transaksi */}
-          <div className="flex flex-col gap-4">
+        {/* BAGIAN UTAMA B: DUA SUB-KOMPONEN HORIZONTAL DENGAN TINGGI SERAGAM (items-stretch) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+          {/* KIRI: Distribusi Alur Transaksi */}
+          <div className="flex flex-col gap-4 h-full">
             <div className="text-left px-1">
               <h2 className="text-base font-semibold text-[#4A3B32] tracking-wide">
                 Rute Transaksi Harian
               </h2>
             </div>
-            <div className="bg-white border border-neutral-100 rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.01)] flex flex-col gap-5 text-left h-full justify-between">
+            {/* flex-1 memastikan kontainer ini mengisi penuh sisa tinggi dari pembungkus grid */}
+            <div className="bg-white border border-neutral-100 rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.01)] flex flex-col justify-between flex-1 gap-6 text-left">
               <div className="flex flex-col gap-4">
                 {metodeBayarData.map((item, idx) => (
                   <div key={idx} className="flex flex-col gap-1.5">
@@ -320,22 +314,23 @@ export default function AdminDashboard() {
                   </div>
                 ))}
               </div>
-              <div className="w-full h-2.5 bg-neutral-100 rounded-full overflow-hidden flex mt-2">
+              <div className="w-full h-2.5 bg-neutral-100 rounded-full overflow-hidden flex">
                 <div className="h-full bg-[#8C6239] w-[67%]" />
                 <div className="h-full bg-amber-500 w-[33%]" />
               </div>
             </div>
           </div>
 
-          {/* KANAN PANDUAN 2: Status Stok Bahan */}
-          <div className="flex flex-col gap-4">
+          {/* KANAN: Status Stok Bahan */}
+          <div className="flex flex-col gap-4 h-full">
             <div className="text-left px-1">
               <h2 className="text-base font-semibold text-[#4A3B32] tracking-wide">
                 Kontrol Bahan Baku
               </h2>
             </div>
-            <div className="bg-white border border-neutral-100 rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.01)] flex flex-col gap-3 text-left">
-              <div className="flex items-start gap-3.5 p-4 bg-amber-50/60 rounded-xl border border-amber-100/50">
+            {/* h-full & flex-1 memaksakan kartu peringatan ini memiliki tinggi yang sama dengan kartu transaksi di kiri */}
+            <div className="bg-white border border-neutral-100 rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.01)] flex flex-col flex-1 text-left justify-start">
+              <div className="flex items-start gap-3.5 p-4 bg-amber-50/60 rounded-xl border border-amber-100/50 h-full">
                 <AlertTriangle
                   size={16}
                   className="text-amber-600 shrink-0 mt-0.5"

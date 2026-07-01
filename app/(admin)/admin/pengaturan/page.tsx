@@ -55,7 +55,7 @@ export default function PengaturanAkun() {
   };
 
   return (
-    <div className="flex flex-col gap-8 pb-16 font-sans select-none relative w-full max-w-2xl mx-auto px-4 md:px-0 mt-26">
+    <div className="flex flex-col gap-8 pb-16 font-sans select-none relative w-full max-w-2xl mx-auto px-4 md:px-0 mt-5 md:mt-26">
       {/* HEADER UTAMA AREA KERJA */}
       <div className="text-left w-full">
         <h2 className="text-lg font-bold text-[#4A3B32] tracking-wide">

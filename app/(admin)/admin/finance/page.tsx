@@ -69,7 +69,7 @@ export default function LaporanFinance() {
 
   return (
     // Penambahan padding eksternal (px-4 md:px-8) untuk memisahkan layout dari area sidebar
-    <div className="flex flex-col gap-8 pb-16 font-sans select-none text-left px-4 md:px-8 mt-26">
+    <div className="flex flex-col gap-8 pb-16 font-sans select-none text-left px-4 md:px-8 mt-5 md:mt-26">
       {/* 1. HEADER SECTION & FILTER TAHUN DROPDOWN */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 px-1">
         <div className="flex flex-col gap-1">
