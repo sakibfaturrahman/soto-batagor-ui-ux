@@ -75,7 +75,7 @@ const textFadeVariants: Variants = {
 export default function AdminDashboard() {
   return (
     // Membatasi max-w-5xl agar konten mengelompok padat di tengah dan tidak renggang berjauhan
-    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-5">
+    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-26">
       {/* ================= HEADER SAPAAN INTERAKTIF FUTURISTIK ================= */}
       <motion.div
         variants={greetingVariants}

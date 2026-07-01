@@ -19,7 +19,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-// Interface Struktur Data Menu Varian
 interface MenuVarian {
   id: string;
   nama: string;
@@ -28,34 +27,36 @@ interface MenuVarian {
 }
 
 export default function InputKilatDanMenu() {
-  // 1. STATE MANAGEMENT DATA UTAMA (CRUD Terintegrasi)
+  // 1. STATE MANAGEMENT DATA UTAMA
   const [menuList, setMenuList] = useState<MenuVarian[]>([
-    { id: "menu-1", nama: "Satu Porsi Penuh", harga: 10000, terjual: 22 },
-    { id: "menu-2", nama: "Setengah Porsi", harga: 5000, terjual: 21 },
+    { id: "menu-1", nama: "Satu Porsi Penuh", harga: 10000, terjual: 0 },
+    { id: "menu-2", nama: "Setengah Porsi", harga: 5000, terjual: 0 },
   ]);
 
-  // State Navigasi Slider Aktif
   const [activeTab, setActiveTab] = useState<"jualan" | "kelola">("jualan");
-
-  // State Form Kelola Menu (Create / Update)
   const [namaInput, setNamaInput] = useState("");
   const [hargaInput, setHargaInput] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  // State Feedback & Jejak Undo (8 Golden Rules)
   const [notification, setNotification] = useState("");
-  const [lastAction, setLastAction] = useState<{
-    type: "increment" | "reset_kategori" | "delete_menu";
-    menuId: string;
-    prevData: any;
-  } | null>(null);
+
+  // ======================================================================
+  // LOGIKA MULTI-STEP UNDO (Struktur Data Stack Array untuk Simpan Riwayat)
+  // ======================================================================
+  const [historyStack, setHistoryStack] = useState<MenuVarian[][]>([]);
+
+  // Fungsi pembantu untuk mengamankan data sebelum dimutasi
+  const saveToHistory = (currentData: MenuVarian[]) => {
+    // Melakukan deep copy data agar riwayat referensinya terisolasi dengan aman
+    const snapshot = currentData.map((item) => ({ ...item }));
+    setHistoryStack((prev) => [...prev, snapshot]);
+  };
 
   const triggerNotification = (text: string) => {
     setNotification(text);
     setTimeout(() => setNotification(""), 2000);
   };
 
-  // --- LOGIKA PASIF KASIR HITUNG CEPAT ---
+  // --- LOGIKA PASIF KASIR ---
   const totalPorsiTerjual = menuList.reduce(
     (acc, item) => acc + item.terjual,
     0,
@@ -70,11 +71,8 @@ export default function InputKilatDanMenu() {
     const target = menuList.find((m) => m.id === id);
     if (!target) return;
 
-    setLastAction({
-      type: "increment",
-      menuId: id,
-      prevData: { terjual: target.terjual },
-    });
+    // Simpan snapshot sebelum angka bertambah
+    saveToHistory(menuList);
 
     setMenuList((prev) =>
       prev.map((m) => (m.id === id ? { ...m, terjual: m.terjual + 1 } : m)),
@@ -87,11 +85,8 @@ export default function InputKilatDanMenu() {
     const target = menuList.find((m) => m.id === id);
     if (!target) return;
 
-    setLastAction({
-      type: "reset_kategori",
-      menuId: id,
-      prevData: { terjual: target.terjual },
-    });
+    // Simpan snapshot sebelum angka dikosongkan
+    saveToHistory(menuList);
 
     setMenuList((prev) =>
       prev.map((m) => (m.id === id ? { ...m, terjual: 0 } : m)),
@@ -106,6 +101,9 @@ export default function InputKilatDanMenu() {
       triggerNotification("Nama menu dan harga tidak boleh kosong");
       return;
     }
+
+    // Simpan snapshot sebelum list menu bertambah atau berubah struktural
+    saveToHistory(menuList);
 
     if (editingId) {
       setMenuList((prev) =>
@@ -135,43 +133,31 @@ export default function InputKilatDanMenu() {
     const target = menuList.find((m) => m.id === id);
     if (!target) return;
 
-    setLastAction({
-      type: "delete_menu",
-      menuId: id,
-      prevData: { item: target, index: menuList.findIndex((m) => m.id === id) },
-    });
+    // Simpan snapshot sebelum menu dibuang dari array
+    saveToHistory(menuList);
 
     setMenuList((prev) => prev.filter((m) => m.id !== id));
     triggerNotification(`Berhasil Menghapus Menu ${target.nama}`);
   };
 
-  // [C] GLOBAL SAFETY CONTROLLER (REVERSAL UNDO)
+  // [C] GLOBAL SAFETY CONTROLLER: UNLIMITED REVERSAL (POP FROM STACK)
   const handleGlobalUndo = () => {
-    if (!lastAction) return;
+    if (historyStack.length === 0) return;
 
-    if (
-      lastAction.type === "increment" ||
-      lastAction.type === "reset_kategori"
-    ) {
-      setMenuList((prev) =>
-        prev.map((m) =>
-          m.id === lastAction.menuId
-            ? { ...m, terjual: lastAction.prevData.terjual }
-            : m,
-        ),
-      );
-    } else if (lastAction.type === "delete_menu") {
-      setMenuList((prev) => {
-        const updated = [...prev];
-        updated.splice(lastAction.prevData.index, 0, lastAction.prevData.item);
-        return updated;
-      });
-    }
-    setLastAction(null);
-    triggerNotification("Perubahan Data Terakhir Dibatalkan (Undo)");
+    // Ambil riwayat snapshot paling terakhir (paling atas dalam stack)
+    const previousState = historyStack[historyStack.length - 1];
+
+    // Kembalikan data utama ke status snapshot tersebut
+    setMenuList(previousState);
+
+    // Keluarkan riwayat tersebut dari tumpukan registry
+    setHistoryStack((prev) => prev.slice(0, -1));
+
+    triggerNotification(
+      `Perubahan Berhasil Dibatalkan (Sisa Undo: ${historyStack.length - 1}x)`,
+    );
   };
 
-  // Ganti blok pendefinisian slideVariants bawaan kamu dengan kode di bawah ini:
   const slideVariants = {
     initial: (dir: number) => ({
       x: dir > 0 ? "120%" : "-120%",
@@ -180,17 +166,17 @@ export default function InputKilatDanMenu() {
     animate: {
       x: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 200, damping: 22 } as const, // Ditambahkan 'as const' di sini
+      transition: { type: "spring", stiffness: 200, damping: 22 } as const,
     },
     exit: (dir: number) => ({
       x: dir < 0 ? "120%" : "-120%",
       opacity: 0,
-      transition: { duration: 0.2 } as const, // Ditambahkan 'as const' di sini
+      transition: { duration: 0.2 } as const,
     }),
   };
 
   return (
-    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-5">
+    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-26">
       {/* BAR NAVIGASI SWITCHER SLIDER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-neutral-100 pb-6 text-left">
         <div className="flex flex-col gap-1">
@@ -241,7 +227,6 @@ export default function InputKilatDanMenu() {
       {/* VIEW SLIDER LAYOUT WRAPPER ANIMATION */}
       <div className="w-full relative min-h-[450px]">
         <AnimatePresence mode="wait" custom={activeTab === "jualan" ? -1 : 1}>
-          {/* ANTARMUKA KASIR JUALAN KILAT */}
           {activeTab === "jualan" && (
             <motion.div
               key="jualan-tab"
@@ -282,7 +267,7 @@ export default function InputKilatDanMenu() {
                 </div>
               </div>
 
-              {/* Grid Kasir Tombol Besar Sekali Klik */}
+              {/* Grid Tombol Kasir */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
                 {menuList.map((item) => (
                   <motion.div
@@ -342,7 +327,7 @@ export default function InputKilatDanMenu() {
               exit="exit"
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full"
             >
-              {/* Form Input Sisi Kiri */}
+              {/* Form Input */}
               <div className="lg:col-span-4 bg-white border border-neutral-100 p-8 rounded-[2.5rem] flex flex-col gap-5 text-left shadow-[0_4px_24px_rgba(0,0,0,0.01)]">
                 <div>
                   <h3 className="text-sm font-semibold text-[#4A3B32]">
@@ -396,6 +381,7 @@ export default function InputKilatDanMenu() {
                         onClick={() => {
                           setEditingId(null);
                           setNamaInput("");
+                          // setFileI(""); // Removed or commented out as setFileI is not defined
                           setHargaInput("");
                         }}
                         className="w-full h-11 text-xs rounded-xl"
@@ -407,7 +393,7 @@ export default function InputKilatDanMenu() {
                 </form>
               </div>
 
-              {/* List Data Sisi Kanan */}
+              {/* List Data */}
               <div className="lg:col-span-8 flex flex-col gap-4 w-full">
                 {menuList.map((item) => (
                   <div
@@ -453,16 +439,16 @@ export default function InputKilatDanMenu() {
         </AnimatePresence>
       </div>
 
-      {/* SAFETY BAR CONTROL: BUTTON UNDO GLOBAL */}
+      {/* SAFETY BAR CONTROL: BUTTON UNDO GLOBAL UNLIMITED */}
       <div className="flex justify-center mt-6">
         <Button
-          disabled={!lastAction}
+          disabled={historyStack.length === 0}
           onClick={handleGlobalUndo}
           variant="outline"
           className="border-neutral-200 text-neutral-500 hover:text-[#8C6239] hover:bg-[#8C6239]/5 rounded-full px-8 py-6 text-xs font-medium transition-all flex items-center gap-2.5 disabled:opacity-30"
         >
           <RotateCcw size={14} />
-          <span>Pulihkan Perubahan Data Terakhir (Undo)</span>
+          <span>Pulihkan Perubahan Terakhir ({historyStack.length})</span>
         </Button>
       </div>
 
