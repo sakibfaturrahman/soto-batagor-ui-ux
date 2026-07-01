@@ -92,10 +92,7 @@ export default function MenuSlider() {
           {/* HEADER KONTEN (Consistency and Standards) */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
             <div className="flex flex-col gap-2 text-left">
-              <span className="text-xs font-semibold text-[#8C6239] tracking-widest uppercase">
-                Varian Menu
-              </span>
-              <h2 className="text-3xl md:text-5xl font-semibold text-[#4A3B32] tracking-wide max-w-md">
+              <h2 className="text-3xl md:text-5xl font-bold text-[#4A3B32] tracking-wide max-w-md">
                 Pilihan Porsi Menu Sederhana
               </h2>
             </div>

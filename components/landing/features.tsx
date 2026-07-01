@@ -69,7 +69,7 @@ export default function Features() {
         {/* SISI KIRI: Judul, Deskripsi Berbasis Storytelling Wawancara, dan Statistik */}
         <div className="lg:col-span-5 flex flex-col items-start text-left">
           <motion.h2
-            className="text-3xl md:text-5xl font-semibold text-[#4A3B32] leading-tight mb-4"
+            className="text-3xl md:text-5xl font-bold text-[#4A3B32] leading-tight mb-4"
             variants={itemVariants}
           >
             Kenapa ribuan pencinta kuliner memilih batagor kami
@@ -126,7 +126,7 @@ export default function Features() {
 
                 {/* Konten Teks Kartu */}
                 <div className="flex flex-col text-left">
-                  <h3 className="text-lg font-semibold text-[#4A3B32] mb-1">
+                  <h3 className="text-lg font-black text-[#4A3B32] mb-1">
                     {card.title}
                   </h3>
                   <p className="text-sm text-neutral-500 font-normal leading-relaxed">

@@ -44,10 +44,7 @@ export default function Workflow() {
       <div className="w-full max-w-7xl flex flex-col gap-14">
         {/* Header Section */}
         <div className="flex flex-col items-start text-left max-w-2xl">
-          <span className="text-xs font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-3 py-1 rounded-full mb-3">
-            Sistem pemesanan
-          </span>
-          <h2 className="text-3xl md:text-5xl font-semibold text-[#4A3B32] leading-tight">
+          <h2 className="text-3xl md:text-5xl font-bold text-[#4A3B32] leading-tight">
             Komitmen kami menjaga kenyamanan antrean anda
           </h2>
         </div>

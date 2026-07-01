@@ -41,16 +41,10 @@ export default function CTA() {
 
         <div className="relative z-10 max-w-2xl flex flex-col items-center">
           {/* Label Kecil */}
-          <motion.span
-            className="text-xs font-semibold text-[#8C6239] tracking-wider uppercase bg-white/80 px-3 py-1 rounded-full mb-4 shadow-sm"
-            variants={itemVariants}
-          >
-            Pemesanan online
-          </motion.span>
 
           {/* Judul Ajakan (Tanpa Font Black & Tanpa Uppercase) */}
           <motion.h2
-            className="text-3xl md:text-5xl font-semibold text-[#4A3B32] leading-tight mb-4 tracking-wide"
+            className="text-3xl md:text-5xl font-bold text-[#4A3B32] leading-tight mb-4 tracking-wide"
             variants={itemVariants}
           >
             Siap menikmati kelezatan batagor abah sekarang?

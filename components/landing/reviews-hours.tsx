@@ -67,7 +67,7 @@ export default function ReviewsHours() {
         {/* SISI KIRI: Testimoni Autentik Mulut ke Mulut (7 Kolom) */}
         <div className="lg:col-span-7 flex flex-col gap-6 text-left">
           <motion.div variants={itemVariants}>
-            <h2 className="text-3xl md:text-5xl font-semibold text-[#4A3B32] leading-tight mb-2">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#4A3B32] leading-tight mb-2">
               Apa kata mereka tentang rasa kami
             </h2>
           </motion.div>
@@ -87,7 +87,7 @@ export default function ReviewsHours() {
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="text-base font-semibold text-[#4A3B32]">
+                    <h4 className="text-base font-black text-[#4A3B32]">
                       {rev.name}
                     </h4>
                     <p className="text-xs text-neutral-400 font-normal">
@@ -122,7 +122,7 @@ export default function ReviewsHours() {
             whileHover={{ boxShadow: "0 20px 40px -20px rgba(0,0,0,0.05)" }}
             className="bg-[#F5F3EE] p-8 rounded-[2rem] border border-neutral-200/40 shadow-sm flex flex-col gap-6 text-left transition-all duration-500"
           >
-            <h3 className="text-xl font-semibold text-[#4A3B32] tracking-wide mb-2">
+            <h3 className="text-xl font-bold text-[#4A3B32] tracking-wide mb-2">
               Informasi kunjungan
             </h3>
 
@@ -139,7 +139,7 @@ export default function ReviewsHours() {
                 <span className="text-sm font-semibold text-[#4A3B32]">
                   Jam operasional harian
                 </span>
-                <span className="text-xs text-neutral-500 font-normal mt-0.5">
+                <span className="text-xs text-neutral-500 font-black mt-0.5">
                   Setiap hari: 10:00 - 20:00
                 </span>
 
@@ -159,7 +159,7 @@ export default function ReviewsHours() {
                     ease: "easeInOut",
                   }}
                 >
-                  <p className="text-[11px] text-[#734F2E] font-medium leading-normal">
+                  <p className="text-[11px] text-[#734F2E] font-black leading-normal">
                     Waktu antrean terpadat fisik terjadi pada setelah Dzuhur
                     hingga selesai Ashar (12:00 - 16:00).
                   </p>
@@ -176,7 +176,7 @@ export default function ReviewsHours() {
                 <Package className="h-5 w-5" />
               </motion.div>
               <div className="flex flex-col">
-                <span className="text-sm font-semibold text-[#4A3B32]">
+                <span className="text-sm font-bold text-[#4A3B32]">
                   Karakteristik pesanan
                 </span>
                 <span className="text-xs text-neutral-500 font-normal mt-0.5">

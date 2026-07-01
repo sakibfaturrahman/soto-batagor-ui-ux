@@ -49,15 +49,8 @@ export default function About() {
 
         {/* SISI KANAN: Storytelling Berdasarkan Hasil Wawancara Nyata */}
         <div className="lg:col-span-6 lg:col-start-7 flex flex-col items-start text-left">
-          <motion.span
-            className="text-xs font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-3 py-1 rounded-full mb-4"
-            variants={itemVariants}
-          >
-            Cerita kami
-          </motion.span>
-
           <motion.h2
-            className="text-3xl md:text-5xl font-semibold text-[#4A3B32] leading-tight mb-6"
+            className="text-3xl md:text-5xl font-bold text-[#4A3B32] leading-tight mb-6"
             variants={itemVariants}
           >
             Lima tahun menjaga konsistensi rasa kuliner tradisional
@@ -88,7 +81,7 @@ export default function About() {
             className="mt-8 pt-6 border-t border-neutral-200/60 w-full flex flex-col gap-1 text-left"
             variants={itemVariants}
           >
-            <span className="text-sm font-semibold text-[#4A3B32]">
+            <span className="text-sm font-black text-[#4A3B32]">
               Dibuat segar setiap hari
             </span>
             <span className="text-xs text-neutral-500 font-normal">
