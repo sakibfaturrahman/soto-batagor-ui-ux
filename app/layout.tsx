@@ -10,7 +10,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Batagor.io — Kelezatan Autentik",
+  title: "Batagor Abah  — Kelezatan Autentik",
   description: "Landing page pengenalan kuliner tradisional batagor",
 };
 

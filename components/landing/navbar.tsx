@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 
 export default function Navbar() {
   // Animasi halus saat navbar pertama kali dimuat (Visibility of System Status)
-  const navbarVariants: Variants = { // Add Variants type
+  const navbarVariants: Variants = {
+    // Add Variants type
     hidden: { y: -20, opacity: 0 },
     visible: {
       y: 0,
@@ -29,7 +30,7 @@ export default function Navbar() {
         {/* Sisi Kiri: Logo / Identitas Brand (Tanpa Uppercase/Black) */}
         <Link href="/" className="flex items-center gap-2 group">
           <span className="text-xl font-semibold text-[#4A3B32] tracking-wide transition-colors group-hover:text-[#8C6239]">
-            Batagor.io
+            Batagor Abah
           </span>
         </Link>
 

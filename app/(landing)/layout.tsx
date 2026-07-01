@@ -1,6 +1,7 @@
 "use client";
 
 import Navbar from "@/components/landing/navbar";
+import Footer from "@/components/landing/footer";
 
 export default function LandingLayout({
   children,
@@ -14,6 +15,9 @@ export default function LandingLayout({
 
       {/* Konten utama halaman landing */}
       <main className="relative z-0">{children}</main>
+
+      {/* Footer di bagian bawah halaman */}
+      <Footer />
     </div>
   );
 }
