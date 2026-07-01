@@ -114,9 +114,6 @@ export default function AdminLogin() {
       >
         {/* Header Form */}
         <div className="flex flex-col items-center text-center mb-8 md:mb-10 gap-2">
-          <span className="text-[11px] font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-4 py-1.5 rounded-full mb-1">
-            Keamanan Sistem
-          </span>
           <h1 className="text-2xl font-bold text-[#4A3B32]">
             Panel Masuk Abah
           </h1>

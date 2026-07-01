@@ -20,16 +20,20 @@ import {
   useCarousel,
 } from "@/components/ui/carousel";
 
+// ======================================================================
+// KOMPONEN TOMBOL KONTROL SLIDE (Muncul Eksklusif Di Mobile)
+// ======================================================================
 function CarouselControls() {
   const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } =
     useCarousel();
 
   return (
-    <div className="hidden md:hidden flex items-center gap-3">
+    // Perbaikan Kelas: `flex md:hidden` membuat kontrol aktif khusus di layar HP
+    <div className="flex md:hidden items-center gap-2.5">
       <Button
         variant="outline"
         size="icon"
-        className="rounded-full h-10 w-10 border-neutral-200 bg-white text-[#4A3B32] hover:bg-[#F5EFEA] transition-all disabled:opacity-40"
+        className="rounded-xl h-9 w-9 border-neutral-200/80 bg-white text-[#4A3B32] active:bg-[#F5EFEA] transition-all disabled:opacity-30 shadow-sm"
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         title="Geser menu sebelumnya"
@@ -39,7 +43,7 @@ function CarouselControls() {
       <Button
         variant="outline"
         size="icon"
-        className="rounded-full h-10 w-10 border-neutral-200 bg-white text-[#4A3B32] hover:bg-[#F5EFEA] transition-all disabled:opacity-40"
+        className="rounded-xl h-9 w-9 border-neutral-200/80 bg-white text-[#4A3B32] active:bg-[#F5EFEA] transition-all disabled:opacity-30 shadow-sm"
         disabled={!canScrollNext}
         onClick={scrollNext}
         title="Geser menu selanjutnya"
@@ -85,32 +89,32 @@ export default function MenuSlider() {
   return (
     <section
       id="komponen"
-      className="w-full bg-[#FDFBF7] py-24 px-6 md:px-16 flex justify-center select-none"
+      className="w-full bg-[#FDFBF7] py-16 md:py-24 px-4 sm:px-6 md:px-16 flex justify-center select-none"
     >
-      <div className="w-full max-w-7xl bg-[#F5F3EE] rounded-[3rem] p-8 md:p-14 flex flex-col gap-8 shadow-[0_4px_30px_rgba(0,0,0,0.01)] border border-neutral-200/30">
+      <div className="w-full max-w-7xl bg-[#F5F3EE] rounded-[2.5rem] md:rounded-[3rem] p-6 md:p-14 flex flex-col gap-8 shadow-[0_4px_30px_rgba(0,0,0,0.01)] border border-neutral-200/30">
         <Carousel opts={{ align: "start", loop: false }} className="w-full">
           {/* HEADER KONTEN (Consistency and Standards) */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-6 mb-8 md:mb-10">
             <div className="flex flex-col gap-2 text-left">
-              <h2 className="text-3xl md:text-5xl font-bold text-[#4A3B32] tracking-wide max-w-md">
+              <h2 className="text-2xl md:text-5xl font-bold text-[#4A3B32] tracking-wide max-w-md">
                 Pilihan Porsi Menu Sederhana
               </h2>
             </div>
-            <p className="text-sm md:text-base text-neutral-500 font-normal max-w-sm text-left md:text-right leading-relaxed">
+            <p className="text-xs md:text-base text-neutral-500 font-normal max-w-sm text-left md:text-right leading-relaxed">
               Dibuat segar setiap hari dengan adonan ikan tenggiri asli yang
               disajikan hangat dengan siraman bumbu kacang legit.
             </p>
           </div>
 
-          {/* YAJARAN KARTU MENU (Aesthetic and Minimalist Design) */}
-          <CarouselContent className="-ml-6">
+          {/* JAJARAN KARTU MENU (Aesthetic and Minimalist Design) */}
+          <CarouselContent className="-ml-4 md:ml-6">
             {menuItems.map((item, index) => (
               <CarouselItem
                 key={index}
-                className="pl-6 sm:basis-1/2 lg:basis-1/2 xl:basis-1/2"
+                className="pl-4 md:pl-6 basis-[88%] sm:basis-1/2 lg:basis-1/2 xl:basis-1/2"
               >
                 <motion.div
-                  className="relative h-[460px] rounded-[2.5rem] overflow-hidden group shadow-md flex flex-col justify-between p-6 md:p-8 bg-neutral-900"
+                  className="relative h-[420px] md:h-[460px] rounded-[2rem] md:rounded-[2.5rem] overflow-hidden group shadow-md flex flex-col justify-between p-5 md:p-8 bg-neutral-900"
                   whileHover={{ y: -6 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
                 >
@@ -125,12 +129,12 @@ export default function MenuSlider() {
 
                   {/* ATAS KARTU: Ubah Status Menjadi Karakteristik Hidangan (Visibility of System Status) */}
                   <div className="relative z-10 flex items-center justify-between w-full">
-                    <div className="bg-[#8C6239]/90 text-white backdrop-blur-sm px-3.5 py-1.5 rounded-full shadow-sm flex items-center gap-1.5 text-[11px] font-medium tracking-wide border border-white/10">
-                      <Flame className="h-3.5 w-3.5 text-amber-400 fill-amber-400 animate-pulse" />
+                    <div className="bg-[#8C6239]/90 text-white backdrop-blur-sm px-3 py-1 md:px-3.5 md:py-1.5 rounded-full shadow-sm flex items-center gap-1 md:gap-1.5 text-[10px] md:text-[11px] font-medium tracking-wide border border-white/10">
+                      <Flame className="h-3 w-3 md:h-3.5 md:w-3.5 text-amber-400 fill-amber-400 animate-pulse" />
                       <span>Disajikan Hangat</span>
                     </div>
 
-                    <div className="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm">
+                    <div className="bg-white/95 backdrop-blur-sm px-3 py-1.5 md:px-4 md:py-2 rounded-full shadow-sm">
                       <span className="text-xs md:text-sm font-bold text-[#8C6239]">
                         {item.price}
                       </span>
@@ -140,34 +144,34 @@ export default function MenuSlider() {
                   {/* BAWAH KARTU: Informasi Detail & Tombol Eksekusi Cepat */}
                   <div className="relative z-10 w-full text-left flex flex-col gap-3">
                     <div className="flex flex-col gap-1">
-                      <h3 className="text-2xl md:text-3xl font-semibold text-white tracking-wide">
+                      <h3 className="text-xl md:text-xl lg:text-3xl font-semibold text-white tracking-wide">
                         {item.title}
                       </h3>
-                      <p className="text-xs md:text-sm text-neutral-300 font-normal leading-relaxed max-w-sm">
+                      <p className="text-[11px] md:text-sm text-neutral-300 font-normal leading-relaxed max-w-sm">
                         {item.desc}
                       </p>
                     </div>
 
                     {/* Fitur Transparansi Komposisi (Reduce Memory Load) */}
-                    <div className="bg-white/10 backdrop-blur-md border border-white/10 px-4 py-2.5 rounded-xl flex items-center gap-2 w-full max-w-sm">
+                    <div className="bg-white/10 backdrop-blur-md border border-white/10 px-3.5 py-2 md:px-4 md:py-2.5 rounded-xl flex items-center gap-2 w-full max-w-sm">
                       <Info className="h-3.5 w-3.5 text-amber-300 shrink-0" />
-                      <span className="text-[11px] text-neutral-200 font-medium tracking-wide">
+                      <span className="text-[10px] md:text-[11px] text-neutral-200 font-medium tracking-wide">
                         {item.composition}
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between gap-4 mt-2 pt-2 border-t border-white/10">
+                    <div className="flex items-center justify-between gap-2 md:gap-4 mt-2 pt-2 border-t border-white/10">
                       {/* Rating & Jam Ramai Terintegrasi */}
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1">
                           <Star className="h-3 w-3 fill-amber-400 stroke-amber-400" />
-                          <span className="text-[11px] font-semibold text-white">
+                          <span className="text-[10px] md:text-[11px] font-semibold text-white">
                             {item.rating}
                           </span>
                         </div>
                         <div className="flex items-center gap-1 text-neutral-400">
                           <Clock className="h-3 w-3" />
-                          <span className="text-[9px] font-light">
+                          <span className="text-[8px] md:text-[9px] font-light">
                             Ramai: 12:00 - 16:00
                           </span>
                         </div>
@@ -180,10 +184,10 @@ export default function MenuSlider() {
                         }
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.97 }}
-                        className="bg-[#8C6239] hover:bg-[#734F2E] text-white text-[11px] font-medium px-4 py-3 rounded-xl flex items-center gap-1.5 transition-colors shadow-md"
+                        className="bg-[#8C6239] hover:bg-[#734F2E] text-white text-[10px] md:text-[11px] font-medium px-3.5 py-2.5 md:px-4 md:py-3 rounded-xl flex items-center gap-1.5 transition-colors shadow-md shrink-0"
                       >
                         <ShoppingCart className="h-3.5 w-3.5" />
-                        <span>Pesan Langsung</span>
+                        <span>Pesan</span>
                       </motion.button>
                     </div>
                   </div>
@@ -193,12 +197,13 @@ export default function MenuSlider() {
           </CarouselContent>
 
           {/* FOOTER CAROUSEL KONTROL */}
-          <div className="flex items-center justify-between mt-12 pt-6 border-t border-neutral-300/30">
-            <div className="flex items-center gap-2 text-left">
-              <span className="text-xs text-neutral-500 font-normal">
+          <div className="flex items-center justify-between mt-8 md:mt-12 pt-5 border-t border-neutral-300/30">
+            <div className="flex items-center gap-2 text-left pr-4">
+              <span className="text-[10px] md:text-xs text-neutral-400 md:text-neutral-500 font-normal leading-relaxed">
                 Menerima Pembayaran Non-Tunai Via QRIS Bebas Biaya Admin
               </span>
             </div>
+            {/* Memanggil Komponen Navigasi Penggeser */}
             <CarouselControls />
           </div>
         </Carousel>
