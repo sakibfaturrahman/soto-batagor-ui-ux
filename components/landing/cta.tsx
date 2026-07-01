@@ -62,8 +62,8 @@ export default function CTA() {
             variants={itemVariants}
           >
             Mayoritas pelanggan kami lebih suka membawa pulang hidangan untuk
-            dinikmati bersama keluarga[cite: 1]. Klik tombol di bawah untuk
-            pesan lebih awal tanpa perlu mengantre lama di lokasi[cite: 1].
+            dinikmati bersama keluarga. Klik tombol di bawah untuk pesan lebih
+            awal tanpa perlu mengantre lama di lokasi.
           </motion.p>
 
           {/* Tombol Interaktif Pesan Online (Micro-interactions / Feedback) */}

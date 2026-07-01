@@ -69,17 +69,17 @@ export default function About() {
               lalu di sudut jalan yang sama. Tanpa promosi besar-besaran di
               media sosial, kelezatan adonan kami menyebar secara alami dari
               mulut ke mulut melalui kepuasan para pelanggan setia yang terus
-              kembali datang[cite: 1].
+              kembali datang.
             </motion.p>
 
             <motion.p variants={itemVariants}>
               Kunci utama kami bertahan adalah kejujuran dalam rasa. Setiap
               subuh, adonan daging ikan tenggiri segar diracik secara mendadak
               bersama tahu sutra lembut untuk memastikan kualitas hidangan
-              terbaik saat digoreng[cite: 1]. Dipadukan dengan siraman bumbu
-              kacang kental yang gurih alami, kami berkomitmen menyajikan
-              kehangatan rasa autentik yang tidak pernah berubah sejak hari
-              pertama kami berjualan[cite: 1].
+              terbaik saat digoreng. Dipadukan dengan siraman bumbu kacang
+              kental yang gurih alami, kami berkomitmen menyajikan kehangatan
+              rasa autentik yang tidak pernah berubah sejak hari pertama kami
+              berjualan.
             </motion.p>
           </div>
 
@@ -93,7 +93,7 @@ export default function About() {
             </span>
             <span className="text-xs text-neutral-500 font-normal">
               Kami membatasi takaran harian demi menjaga keaslian rasa ikan
-              tenggiri murni tanpa pengawet[cite: 1].
+              tenggiri murni tanpa pengawet.
             </span>
           </motion.div>
         </div>

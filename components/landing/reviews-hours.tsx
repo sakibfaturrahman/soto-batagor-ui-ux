@@ -50,7 +50,6 @@ export default function ReviewsHours() {
       text: "Rasa batagor kuahnya enak banget, selalu jadi pilihan pertama saat ngemil di kampus.",
       rating: 4,
     },
-
   ];
 
   return (
@@ -182,7 +181,7 @@ export default function ReviewsHours() {
                 </span>
                 <span className="text-xs text-neutral-500 font-normal mt-0.5">
                   Mayoritas pelanggan lebih menyukai pesanan dibungkus untuk
-                  dibawa pulang hangat ke rumah[cite: 1].
+                  dibawa pulang hangat ke rumah.
                 </span>
               </div>
             </div>

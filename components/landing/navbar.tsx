@@ -1,20 +1,62 @@
 "use client";
 
+import { useEffect } from "react";
 import Link from "next/link";
-import { motion, Variants } from "framer-motion"; // Import Variants
+import { useRouter } from "next/navigation";
+import { motion, Variants } from "framer-motion";
 import { Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function Navbar() {
-  // Animasi halus saat navbar pertama kali dimuat (Visibility of System Status)
+  const router = useRouter();
+
+  // Efek Rahasia: Mengalihkan ke halaman login hanya jika menekan Ctrl + Alt + A
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "a") {
+        event.preventDefault();
+        router.push("/admin/login");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [router]);
+
+  // Animasi halus saat navbar pertama kali dimuat
   const navbarVariants: Variants = {
-    // Add Variants type
     hidden: { y: -20, opacity: 0 },
     visible: {
       y: 0,
-      opacity: 1, // Change ease to cubic-bezier array to satisfy Easing type
-      transition: { duration: 0.5, ease: [0, 0, 0.58, 1] }, // Standard easeOut cubic-bezier
+      opacity: 1,
+      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+    },
+  };
+
+  // Konstanta teks untuk efek gerak karakter per huruf
+  const brandText = "Batagor Abah";
+
+  // Varian Kontainer Huruf (Stagger Parent)
+  const brandContainerVariants = {
+    initial: {},
+    hover: {
+      transition: {
+        staggerChildren: 0.03,
+      },
+    },
+  };
+
+  // Varian Setiap Huruf Individu (Futuristic Elastic Jump)
+  const letterVariants: Variants = {
+    initial: { y: 0, color: "#4A3B32" },
+    hover: {
+      y: -4,
+      color: "#8C6239",
+      transition: {
+        type: "spring",
+        stiffness: 400,
+        damping: 10,
+      },
     },
   };
 
@@ -25,19 +67,34 @@ export default function Navbar() {
       animate="visible"
       variants={navbarVariants}
     >
-      {/* Container Navbar - Dibuat melayang & menyatu dengan gaya container Hero */}
-      <div className="w-full max-w-7xl bg-white/80 backdrop-blur-md rounded-full px-6 py-3 flex items-center justify-between shadow-sm border border-neutral-100 pointer-events-auto">
-        {/* Sisi Kiri: Logo / Identitas Brand (Tanpa Uppercase/Black) */}
+      {/* Container Navbar - Melayang & Menyatu Harmonis */}
+      <div className="w-full max-w-7xl bg-white/80 backdrop-blur-md rounded-full px-6 py-3.5 flex items-center justify-between shadow-[0_4px_20px_rgba(0,0,0,0.02)] border border-neutral-100/80 pointer-events-auto">
+        {/* SISI KIRI: Identitas Brand Premium dengan Animasi Karakter Pop Up */}
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-xl font-semibold text-[#4A3B32] tracking-wide transition-colors group-hover:text-[#8C6239]">
-            Batagor Abah
-          </span>
+          <motion.div
+            variants={brandContainerVariants}
+            initial="initial"
+            whileHover="hover"
+            className="flex items-center select-none overflow-hidden py-1"
+          >
+            {brandText.split("").map((letter, index) => (
+              <motion.span
+                key={index}
+                variants={letterVariants}
+                className="text-lg font-black tracking-wide inline-block"
+                style={{ whiteSpace: letter === " " ? "pre" : "normal" }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </motion.div>
         </Link>
 
-        {/* Sisi Tengah: Menu Navigasi Utama (Consistency & Reduce Memory Load) */}
-        <nav className="hidden md:flex items-center gap-8">
+        {/* SISI TENGAH: Menu Navigasi Sesuai Permintaan */}
+        <nav className="hidden md:flex items-center gap-8 lg:gap-10">
           {[
-            { name: "Beranda", href: "/" },
+            { name: "Beranda", href: "#beranda" },
+            { name: "Tentang", href: "#tentang" },
             { name: "Keunikan", href: "#keunikan" },
             { name: "Komponen", href: "#komponen" },
             { name: "Ulasan", href: "#ulasan" },
@@ -45,35 +102,25 @@ export default function Navbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="text-sm font-medium text-neutral-600 hover:text-[#8C6239] transition-colors relative py-1 group"
+              className="text-xs lg:text-sm font-medium text-neutral-500 hover:text-[#8C6239] transition-colors relative py-1 group"
             >
               {item.name}
-              {/* Efek garis bawah interaktif yang smooth saat di-hover */}
-              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#8C6239] transition-all duration-300 group-hover:w-full" />
+              {/* Efek Garis Bawah Elastis */}
+              <span className="absolute bottom-0 left-0 w-0 h-[2px] bg-[#8C6239] transition-all duration-300 ease-out group-hover:w-full" />
             </Link>
           ))}
         </nav>
 
-        {/* Sisi Kanan: Pencarian Ringkas & Tombol Aksi Admin */}
+        {/* SISI KANAN: Kolom Pencarian Estetik */}
         <div className="flex items-center gap-4">
-          {/* Kolom Pencarian Statis Interaktif seperti pada Gambar Referensi */}
-          <div className="relative hidden lg:block w-60">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
+          <div className="relative w-48 lg:w-60">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
             <Input
               type="text"
-              placeholder="Cari varian atau lokasi..."
-              className="pl-9 pr-4 py-1.5 h-9 w-full rounded-full bg-neutral-50/50 border-neutral-200/80 focus-visible:ring-[#8C6239] text-sm text-[#4A3B32] font-normal"
+              placeholder="Cari varian menu..."
+              className="pl-9 pr-4 py-1.5 h-9 w-full rounded-full bg-neutral-50/60 border-neutral-200/60 focus-visible:ring-[#8C6239]/20 focus-visible:border-[#8C6239] text-xs text-[#4A3B32] font-normal placeholder:text-neutral-400"
             />
           </div>
-
-          {/* Tombol Menuju Halaman Login Admin (Micro-interactions / Feedback) */}
-          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-            <Link href="/login">
-              <Button className="bg-[#4A3B32] hover:bg-[#3D3028] text-white font-medium px-5 h-9 rounded-full text-xs tracking-wide shadow-sm transition-colors">
-                Masuk admin
-              </Button>
-            </Link>
-          </motion.div>
         </div>
       </div>
     </motion.header>

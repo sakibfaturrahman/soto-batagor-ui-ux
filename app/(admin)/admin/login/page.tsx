@@ -29,7 +29,7 @@ export default function AdminLogin() {
     if (e) e.preventDefault();
 
     if (!username || !password) {
-      setError("nama pengguna dan kata sandi wajib diisi");
+      setError("Nama Pengguna dan Kata Sandi Wajib Diisi");
       return;
     }
 
@@ -37,7 +37,7 @@ export default function AdminLogin() {
       setError("");
       router.push("/admin/dashboard");
     } else {
-      setError("nama pengguna atau kata sandi salah, silakan cek kembali");
+      setError("Nama Pengguna atau Kata Sandi Salah, Silakan Cek Kembali");
     }
   };
 
@@ -49,37 +49,40 @@ export default function AdminLogin() {
     setPassword("tenggiri5tahun");
 
     setTimeout(() => {
+      // Pastikan helper ditutup sebelum pindah halaman agar tidak meninggalkan jejak state melayang
+      setShowHelper(false);
       router.push("/admin/dashboard");
     }, 800);
   };
 
   return (
     <div className="w-full min-h-screen bg-[#FDFBF7] flex flex-col items-center justify-center p-4 md:p-6 font-sans select-none relative overflow-hidden">
-      {/* 1. POP-UP MODAL PANDUAN AKUN: SEKARANG DI ATAS (Responsif di Atas Layar) */}
+      {/* 1. POP-UP MODAL PANDUAN AKUN: Diisolasi penuh dalam lingkup internal halaman login saja */}
       <AnimatePresence>
         {showHelper && (
           <motion.div
             initial={{ opacity: 0, y: -50, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            className="fixed top-4 left-4 right-4 md:left-auto md:top-6 md:right-6 z-50 w-auto md:w-full md:max-w-xs bg-[#4A3B32] text-white p-5 rounded-2xl shadow-xl border border-white/5 flex flex-col gap-3 text-left"
+            className="fixed top-4 left-4 right-4 md:left-auto md:top-6 md:right-6 z-50 w-auto md:w-full md:max-w-sm bg-[#4A3B32] text-white p-6 rounded-2xl shadow-xl border border-white/5 flex flex-col gap-4 text-left"
           >
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-amber-400 text-xs font-semibold lowercase">
-                <HelpCircle size={14} />
-                <span>panduan demo dosen</span>
+              <div className="flex items-center gap-2 text-amber-400 text-xs sm:text-sm font-semibold">
+                <HelpCircle size={16} />
+                <span>Panduan Demo Dosen</span>
               </div>
               <button
+                type="button"
                 onClick={() => setShowHelper(false)}
-                className="text-neutral-400 hover:text-white text-[11px] font-medium transition-colors bg-white/5 px-2.5 py-1 rounded-lg border border-white/5 md:bg-transparent md:p-0 md:border-none"
+                className="text-neutral-400 hover:text-white text-xs font-medium transition-colors bg-white/5 px-3 py-1.5 rounded-lg border border-white/5 md:bg-transparent md:p-0 md:border-none"
               >
-                tutup
+                Tutup
               </button>
             </div>
 
-            <p className="text-[10px] text-neutral-300 font-light leading-relaxed lowercase">
-              klik tombol uji coba di bawah untuk mengisi formulir secara instan
-              dan langsung dialihkan ke ruang panel admin.
+            <p className="text-xs text-neutral-300 font-light leading-relaxed">
+              Klik Tombol Uji Coba Di Bawah Untuk Mengisi Formulir Secara Instan
+              dan Langsung Dialihkan Ke Ruang Panel Admin.
             </p>
 
             {/* Tombol CTA Pengisian Otomatis */}
@@ -87,16 +90,16 @@ export default function AdminLogin() {
               <Button
                 onClick={handleAutoLogin}
                 disabled={isAutoLoggingIn}
-                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 text-[11px] py-4 h-10 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-colors"
+                className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/10 text-xs py-5 h-11 rounded-xl flex items-center justify-center gap-1.5 font-medium transition-colors"
               >
-                <span>pilih akun & masuk instan</span>
-                <ArrowRight size={12} className="mt-0.5" />
+                <span>Pilih Akun & Masuk Instan</span>
+                <ArrowRight size={14} className="mt-0.5" />
               </Button>
             </motion.div>
 
-            <div className="bg-black/10 p-2.5 rounded-xl border border-white/5 flex flex-col gap-0.5 font-mono text-[9px] text-neutral-400">
-              <div>user: abah_batagor</div>
-              <div>pass: tenggiri5tahun</div>
+            <div className="bg-black/10 p-3 rounded-xl border border-white/5 flex flex-col gap-1 font-mono text-xs text-neutral-400">
+              <div>User: abah_batagor</div>
+              <div>Pass: tenggiri5tahun</div>
             </div>
           </motion.div>
         )}
@@ -107,18 +110,18 @@ export default function AdminLogin() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-md bg-white border border-neutral-100 rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 shadow-[0_8px_30px_rgb(0,0,0,0.01)] relative z-10 my-auto"
+        className="w-full max-w-lg bg-white border border-neutral-100 rounded-[2.5rem] p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.01)] relative z-10 my-auto"
       >
         {/* Header Form */}
-        <div className="flex flex-col items-center text-center mb-6 md:mb-8 gap-1">
-          <span className="text-[10px] font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-3 py-1 rounded-full mb-2">
-            keamanan sistem
+        <div className="flex flex-col items-center text-center mb-8 md:mb-10 gap-2">
+          <span className="text-[11px] font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-4 py-1.5 rounded-full mb-1">
+            Keamanan Sistem
           </span>
-          <h1 className="text-xl font-semibold text-[#4A3B32] lowercase">
-            panel masuk abah
+          <h1 className="text-2xl font-bold text-[#4A3B32]">
+            Panel Masuk Abah
           </h1>
-          <p className="text-[11px] text-neutral-400 font-light lowercase px-4">
-            akses khusus pemilik untuk mencatatkan pembukuan jualan
+          <p className="text-xs text-neutral-400 font-light px-4 leading-relaxed">
+            Akses Khusus Pemilik Untuk Mencatatkan Pembukuan Jualan
           </p>
         </div>
 
@@ -127,53 +130,53 @@ export default function AdminLogin() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="mb-5 p-3.5 bg-red-50 border border-red-100 rounded-xl flex items-start gap-2.5 text-left text-[11px] text-red-500 font-medium lowercase"
+            className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-2.5 text-left text-xs text-red-500 font-medium"
           >
-            <AlertCircle size={14} className="shrink-0 mt-0.5" />
+            <AlertCircle size={16} className="shrink-0 mt-0.5" />
             <span>{error}</span>
           </motion.div>
         )}
 
         {/* FORM INTERAKSI INPUT */}
-        <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <form onSubmit={handleLogin} className="flex flex-col gap-5">
           {/* Input 1: Username */}
-          <div className="flex flex-col gap-1.5 text-left">
-            <label className="text-[10px] font-medium text-neutral-400 pl-1 lowercase">
-              nama pengguna
+          <div className="flex flex-col gap-2 text-left">
+            <label className="text-xs font-semibold text-neutral-500 pl-1">
+              Nama Pengguna
             </label>
             <div className="relative">
               <User
-                size={14}
+                size={16}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
               />
               <Input
                 type="text"
-                placeholder="masukkan nama pengguna"
+                placeholder="Masukkan Nama Pengguna"
                 value={username}
                 disabled={isAutoLoggingIn}
                 onChange={(e) => setUsername(e.target.value)}
-                className="pl-11 h-12 rounded-xl bg-neutral-50/50 border-neutral-200/80 text-xs text-[#4A3B32] placeholder:text-neutral-400/80 focus-visible:ring-[#8C6239]/20 focus-visible:border-[#8C6239] lowercase transition-all duration-300 disabled:opacity-80"
+                className="pl-12 h-14 rounded-xl bg-neutral-50/50 border-neutral-200/80 text-sm text-[#4A3B32] placeholder:text-neutral-400/80 focus-visible:ring-[#8C6239]/20 focus-visible:border-[#8C6239] transition-all duration-300 disabled:opacity-80"
               />
             </div>
           </div>
 
           {/* Input 2: Password */}
-          <div className="flex flex-col gap-1.5 text-left">
-            <label className="text-[10px] font-medium text-neutral-400 pl-1 lowercase">
-              kata sandi
+          <div className="flex flex-col gap-2 text-left">
+            <label className="text-xs font-semibold text-neutral-500 pl-1">
+              Kata Sandi
             </label>
             <div className="relative">
               <Lock
-                size={14}
+                size={16}
                 className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-400"
               />
               <Input
                 type={showPassword ? "text" : "password"}
-                placeholder="masukkan kata sandi"
+                placeholder="Masukkan Kata Sandi"
                 value={password}
                 disabled={isAutoLoggingIn}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-11 pr-11 h-12 rounded-xl bg-neutral-50/50 border-neutral-200/80 text-xs text-[#4A3B32] placeholder:text-neutral-400/80 focus-visible:ring-[#8C6239]/20 focus-visible:border-[#8C6239]"
+                className="pl-12 pr-12 h-14 rounded-xl bg-neutral-50/50 border-neutral-200/80 text-sm text-[#4A3B32] placeholder:text-neutral-400/80 focus-visible:ring-[#8C6239]/20 focus-visible:border-[#8C6239]"
               />
               <button
                 type="button"
@@ -181,7 +184,7 @@ export default function AdminLogin() {
                 disabled={isAutoLoggingIn}
                 className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-[#8C6239] transition-colors disabled:opacity-50"
               >
-                {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
           </div>
@@ -190,20 +193,20 @@ export default function AdminLogin() {
           <motion.div
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
-            className="mt-2 md:mt-4"
+            className="mt-4"
           >
             <Button
               type="submit"
               disabled={isAutoLoggingIn}
-              className="w-full h-12 bg-[#8C6239] hover:bg-[#734F2E] text-white font-medium rounded-xl text-xs tracking-wide transition-colors shadow-sm disabled:bg-[#734F2E]/80 flex items-center justify-center gap-2"
+              className="w-full h-14 bg-[#8C6239] hover:bg-[#734F2E] text-white font-medium rounded-xl text-sm tracking-wide transition-colors shadow-sm disabled:bg-[#734F2E]/80 flex items-center justify-center gap-2"
             >
-              {isAutoLoggingIn ? "memproses masuk..." : "masuk ke dashboard"}
+              {isAutoLoggingIn ? "Memproses Masuk..." : "Masuk Ke Dashboard"}
             </Button>
           </motion.div>
         </form>
       </motion.div>
 
-      {/* 2. TOMBOL PEMICU BANTUAN: SEKARANG DI BAWAH (Melayang di Kanan Bawah) */}
+      {/* 2. TOMBOL PEMICU BANTUAN: Terkunci penuh di file ini, dijamin hilang ketika pindah rute */}
       <AnimatePresence>
         {!showHelper && (
           <motion.button
@@ -211,12 +214,12 @@ export default function AdminLogin() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.8 }}
             onClick={() => setShowHelper(true)}
-            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 bg-[#4A3B32] text-amber-400 p-3.5 rounded-xl shadow-lg border border-white/10 flex items-center gap-2 text-xs font-medium lowercase"
+            className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 bg-[#4A3B32] text-amber-400 p-4 rounded-xl shadow-lg border border-white/10 flex items-center gap-2 text-xs font-semibold"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
           >
-            <HelpCircle size={15} />
-            <span className="text-white">bantuan akun</span>
+            <HelpCircle size={16} />
+            <span className="text-white">Bantuan Akun</span>
           </motion.button>
         )}
       </AnimatePresence>
