@@ -84,7 +84,7 @@ export default function PendapatanBerkala() {
   const currentData = databasePendapatan[filter];
 
   return (
-    <div className="flex flex-col gap-6 md:gap-8 pb-28 md:pb-24 font-sans select-none max-w-5xl mx-auto px-4 md:px-6 mt-20 md:mt-26 w-full text-[#4A3B32]">
+    <div className="flex flex-col gap-6 md:gap-8 pb-28 md:pb-24 font-sans select-none max-w-5xl mx-auto px-4 md:px-6 mt-5 md:mt-26 w-full text-[#4A3B32]">
       {/* ================= HEADER & SAKLAR FILTER TIMEFRAME ================= */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 w-full border-b border-neutral-100 pb-5">
         <div className="text-left">

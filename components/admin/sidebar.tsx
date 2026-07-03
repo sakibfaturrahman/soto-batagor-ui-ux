@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   PlusCircle,
   TrendingUp,
+  Wallet,
   LogOut,
   Store,
 } from "lucide-react";
@@ -22,6 +23,11 @@ const menuItems = [
     title: "Catat Jualan Kilat",
     href: "/admin/input-kilat",
     icon: PlusCircle,
+  },
+  {
+    title: "Pendapatan Harian",
+    href: "/admin/revenue",
+    icon: Wallet,
   },
   {
     title: "Laporan Untung Rugi",
