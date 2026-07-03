@@ -7,14 +7,13 @@ import {
   RotateCcw,
   CheckCircle2,
   Utensils,
-  TrendingUp,
   Coins,
   Trash2,
   Edit3,
   Save,
-  X,
   Layers,
   Zap,
+  HelpCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +23,13 @@ interface MenuVarian {
   nama: string;
   harga: number;
   terjual: number;
+}
+
+interface ConfirmState {
+  isOpen: boolean;
+  type: "increment" | "reset";
+  id: string;
+  label: string;
 }
 
 export default function InputKilatDanMenu() {
@@ -39,14 +45,18 @@ export default function InputKilatDanMenu() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [notification, setNotification] = useState("");
 
-  // ======================================================================
-  // LOGIKA MULTI-STEP UNDO (Struktur Data Stack Array untuk Simpan Riwayat)
-  // ======================================================================
+  // State untuk Modal Konfirmasi Interaktif
+  const [confirmModal, setConfirmModal] = useState<ConfirmState>({
+    isOpen: false,
+    type: "increment",
+    id: "",
+    label: "",
+  });
+
+  // LOGIKA MULTI-STEP UNDO (Struktur Data Stack)
   const [historyStack, setHistoryStack] = useState<MenuVarian[][]>([]);
 
-  // Fungsi pembantu untuk mengamankan data sebelum dimutasi
   const saveToHistory = (currentData: MenuVarian[]) => {
-    // Melakukan deep copy data agar riwayat referensinya terisolasi dengan aman
     const snapshot = currentData.map((item) => ({ ...item }));
     setHistoryStack((prev) => [...prev, snapshot]);
   };
@@ -66,32 +76,42 @@ export default function InputKilatDanMenu() {
     0,
   );
 
-  // [A] AKSI KASIR JUALAN KILAT
-  const handleIncrement = (id: string) => {
-    const target = menuList.find((m) => m.id === id);
-    if (!target) return;
-
-    // Simpan snapshot sebelum angka bertambah
-    saveToHistory(menuList);
-
-    setMenuList((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, terjual: m.terjual + 1 } : m)),
-    );
-    triggerNotification(`Berhasil Menambah 1 ${target.nama}`);
+  // [A] PEMICU DIALOG KONFIRMASI (Kasir Kilat)
+  const triggerConfirm = (
+    id: string,
+    type: "increment" | "reset",
+    label: string,
+    e?: React.MouseEvent,
+  ) => {
+    if (e) e.stopPropagation(); // Mencegah bubbling click pada tombol reset
+    setConfirmModal({
+      isOpen: true,
+      type,
+      id,
+      label,
+    });
   };
 
-  const handleResetCounter = (id: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    const target = menuList.find((m) => m.id === id);
-    if (!target) return;
+  // Eksekusi final setelah disetujui di modal
+  const handleExecuteAction = () => {
+    const { type, id, label } = confirmModal;
 
-    // Simpan snapshot sebelum angka dikosongkan
-    saveToHistory(menuList);
+    if (type === "increment") {
+      saveToHistory(menuList);
+      setMenuList((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, terjual: m.terjual + 1 } : m)),
+      );
+      triggerNotification(`Berhasil Menambah 1 ${label}`);
+    } else if (type === "reset") {
+      saveToHistory(menuList);
+      setMenuList((prev) =>
+        prev.map((m) => (m.id === id ? { ...m, terjual: 0 } : m)),
+      );
+      triggerNotification(`Catatan ${label} Dikosongkan`);
+    }
 
-    setMenuList((prev) =>
-      prev.map((m) => (m.id === id ? { ...m, terjual: 0 } : m)),
-    );
-    triggerNotification(`Catatan ${target.nama} Hari Ini Dikosongkan`);
+    // Tutup kembali modal konfirmasi
+    setConfirmModal((prev) => ({ ...prev, isOpen: false }));
   };
 
   // [B] AKSI MANAJEMEN CRUD MENU
@@ -102,7 +122,6 @@ export default function InputKilatDanMenu() {
       return;
     }
 
-    // Simpan snapshot sebelum list menu bertambah atau berubah struktural
     saveToHistory(menuList);
 
     if (editingId) {
@@ -133,32 +152,23 @@ export default function InputKilatDanMenu() {
     const target = menuList.find((m) => m.id === id);
     if (!target) return;
 
-    // Simpan snapshot sebelum menu dibuang dari array
     saveToHistory(menuList);
-
     setMenuList((prev) => prev.filter((m) => m.id !== id));
     triggerNotification(`Berhasil Menghapus Menu ${target.nama}`);
   };
 
-  // [C] GLOBAL SAFETY CONTROLLER: UNLIMITED REVERSAL (POP FROM STACK)
+  // [C] GLOBAL SAFETY CONTROLLER: UNDO
   const handleGlobalUndo = () => {
     if (historyStack.length === 0) return;
-
-    // Ambil riwayat snapshot paling terakhir (paling atas dalam stack)
     const previousState = historyStack[historyStack.length - 1];
-
-    // Kembalikan data utama ke status snapshot tersebut
     setMenuList(previousState);
-
-    // Keluarkan riwayat tersebut dari tumpukan registry
     setHistoryStack((prev) => prev.slice(0, -1));
-
     triggerNotification(
       `Perubahan Berhasil Dibatalkan (Sisa Undo: ${historyStack.length - 1}x)`,
     );
   };
 
-  const slideVariants = {
+  const slideVariants: Variants = {
     initial: (dir: number) => ({
       x: dir > 0 ? "120%" : "-120%",
       opacity: 0,
@@ -166,39 +176,39 @@ export default function InputKilatDanMenu() {
     animate: {
       x: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 200, damping: 22 } as const,
+      transition: { type: "spring", stiffness: 200, damping: 22 },
     },
     exit: (dir: number) => ({
       x: dir < 0 ? "120%" : "-120%",
       opacity: 0,
-      transition: { duration: 0.2 } as const,
+      transition: { duration: 0.2 },
     }),
   };
 
   return (
-    <div className="flex flex-col gap-8 pb-24 font-sans select-none max-w-5xl mx-auto px-2 mt-5 md:mt-22">
+    <div className="flex flex-col gap-8 pb-28 md:pb-24 font-sans select-none max-w-5xl mx-auto px-4 mt-20 md:mt-26 w-full">
       {/* BAR NAVIGASI SWITCHER SLIDER */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-neutral-100 pb-6 text-left">
         <div className="flex flex-col gap-1">
-          <h2 className="text-xl md:text-2xl font-semibold text-[#4A3B32] tracking-wide">
+          <h2 className="text-xl md:text-2xl font-bold text-[#4A3B32] tracking-wide">
             {activeTab === "jualan"
               ? "Catat Jualan Kilat"
-              : "Kelola Varian Menu Batagor"}
+              : "Kelola Varian Menu"}
           </h2>
-          <p className="text-sm text-neutral-400 font-normal">
+          <p className="text-xs md:text-sm text-neutral-400 font-normal">
             {activeTab === "jualan"
-              ? "Ketuk kartu porsi untuk menambahkan data penjualan di warung secara kilat."
+              ? "Ketuk kartu porsi untuk menambahkan data penjualan di warung secara jitu."
               : "Tambah variasi paket menu baru atau edit patokan harga jual batagor Abah."}
           </p>
         </div>
 
         {/* Tab Slide Button Switcher */}
-        <div className="bg-neutral-100/80 p-1.5 rounded-2xl flex items-center relative gap-1 border border-neutral-200/40 shrink-0 self-start sm:self-auto shadow-inner">
+        <div className="bg-neutral-100/80 p-1.5 rounded-2xl flex items-center relative gap-1 border border-neutral-200/40 shrink-0 shadow-inner">
           <button
             onClick={() => setActiveTab("jualan")}
-            className={`px-5 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 ${activeTab === "jualan" ? "text-[#8C6239]" : "text-neutral-400 hover:text-neutral-600"}`}
+            className={`px-4 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 ${activeTab === "jualan" ? "text-[#8C6239]" : "text-neutral-400 hover:text-neutral-600"}`}
           >
-            <Zap size={14} />
+            <Zap size={13} />
             <span>Mode Kasir Kilat</span>
             {activeTab === "jualan" && (
               <motion.div
@@ -210,9 +220,9 @@ export default function InputKilatDanMenu() {
 
           <button
             onClick={() => setActiveTab("kelola")}
-            className={`px-5 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 ${activeTab === "kelola" ? "text-[#8C6239]" : "text-neutral-400 hover:text-neutral-600"}`}
+            className={`px-4 py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center gap-2 relative z-10 ${activeTab === "kelola" ? "text-[#8C6239]" : "text-neutral-400 hover:text-neutral-600"}`}
           >
-            <Layers size={14} />
+            <Layers size={13} />
             <span>Mode Kelola Menu</span>
             {activeTab === "kelola" && (
               <motion.div
@@ -235,65 +245,70 @@ export default function InputKilatDanMenu() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="flex flex-col gap-8 w-full"
+              className="flex flex-col gap-6 w-full"
             >
               {/* Summary Pasif Live Update */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
-                <div className="bg-white border border-neutral-100 p-6 rounded-2xl flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
-                  <div className="flex flex-col text-left gap-1.5">
-                    <span className="text-xs font-normal text-neutral-400">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                <div className="bg-white border border-neutral-100 p-5 md:p-6 rounded-xl flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
+                  <div className="flex flex-col text-left gap-1">
+                    <span className="text-[11px] md:text-xs font-normal text-neutral-400">
                       Total Porsi Terjual
                     </span>
-                    <span className="text-2xl font-semibold text-[#4A3B32]">
+                    <span className="text-xl md:text-2xl font-semibold text-[#4A3B32]">
                       {totalPorsiTerjual} Porsi
                     </span>
                   </div>
-                  <div className="p-3.5 bg-[#8C6239]/10 text-[#8C6239] rounded-xl shrink-0">
-                    <Utensils size={18} />
+                  <div className="p-3 bg-[#8C6239]/10 text-[#8C6239] rounded-xl shrink-0">
+                    <Utensils size={16} />
                   </div>
                 </div>
-                <div className="bg-white border border-neutral-100 p-6 rounded-2xl flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
-                  <div className="flex flex-col text-left gap-1.5">
-                    <span className="text-xs font-normal text-neutral-400">
+                <div className="bg-white border border-neutral-100 p-5 md:p-6 rounded-xl flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)]">
+                  <div className="flex flex-col text-left gap-1">
+                    <span className="text-[11px] md:text-xs font-normal text-neutral-400">
                       Perkiraan Omset Masuk
                     </span>
-                    <span className="text-xl font-semibold text-emerald-600">
+                    <span className="text-xl md:text-2xl font-semibold text-emerald-600">
                       Rp {totalOmset.toLocaleString("id-ID")}
                     </span>
                   </div>
-                  <div className="p-3.5 bg-emerald-50 text-emerald-500 rounded-xl shrink-0">
-                    <Coins size={18} />
+                  <div className="p-3 bg-emerald-50 text-emerald-500 rounded-xl shrink-0">
+                    <Coins size={16} />
                   </div>
                 </div>
               </div>
 
               {/* Grid Tombol Kasir */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 w-full">
                 {menuList.map((item) => (
                   <motion.div
                     key={item.id}
-                    onClick={() => handleIncrement(item.id)}
+                    onClick={() =>
+                      triggerConfirm(item.id, "increment", item.nama)
+                    }
                     whileHover={{
                       scale: 1.01,
-                      borderColor: "rgba(140, 98, 57, 0.2)",
+                      borderColor: "rgba(140, 98, 57, 0.15)",
                     }}
-                    whileTap={{ scale: 0.98 }}
-                    className="bg-white border border-neutral-100 rounded-[2.5rem] p-8 md:p-10 flex flex-col justify-between gap-6 shadow-[0_4px_24px_rgba(0,0,0,0.01)] relative cursor-pointer group select-none overflow-hidden"
+                    whileTap={{ scale: 0.99 }}
+                    className="bg-white border border-neutral-100 rounded-[2rem] p-6 md:p-8 flex flex-col justify-between gap-6 shadow-[0_4px_24px_rgba(0,0,0,0.01)] relative cursor-pointer group overflow-hidden"
                   >
                     <button
-                      onClick={(e) => handleResetCounter(item.id, e)}
+                      type="button"
+                      onClick={(e) =>
+                        triggerConfirm(item.id, "reset", item.nama, e)
+                      }
                       title="Kosongkan hitungan varian ini"
-                      className="absolute top-8 right-8 p-2.5 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
+                      className="absolute top-6 right-6 p-2 text-neutral-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={15} />
                     </button>
 
-                    <div className="flex flex-col items-start gap-4 text-left">
-                      <div className="p-4 bg-[#8C6239]/5 text-[#8C6239] rounded-xl">
-                        <Utensils size={22} />
+                    <div className="flex flex-col items-start gap-3 text-left">
+                      <div className="p-3 bg-[#8C6239]/5 text-[#8C6239] rounded-xl">
+                        <Utensils size={18} />
                       </div>
-                      <div className="flex flex-col gap-0.5">
-                        <span className="text-base font-semibold text-[#4A3B32]">
+                      <div className="flex flex-col">
+                        <span className="text-sm md:text-base font-semibold text-[#4A3B32]">
                           {item.nama}
                         </span>
                         <span className="text-xs text-neutral-400 font-light">
@@ -302,12 +317,12 @@ export default function InputKilatDanMenu() {
                       </div>
                     </div>
 
-                    <div className="text-6xl font-bold text-[#8C6239] my-2 text-left">
+                    <div className="text-5xl md:text-6xl font-bold text-[#8C6239] my-1 text-left">
                       {item.terjual}
                     </div>
 
-                    <div className="w-full bg-[#8C6239] group-hover:bg-[#734F2E] text-white py-4 rounded-xl flex items-center justify-center gap-2.5 font-medium text-xs tracking-wide transition-colors shadow-sm">
-                      <Plus size={16} className="stroke-[2.5]" />
+                    <div className="w-full bg-[#8C6239] group-hover:bg-[#734F2E] text-white py-3.5 rounded-xl flex items-center justify-center gap-2 font-medium text-xs tracking-wide transition-colors">
+                      <Plus size={15} className="stroke-[2.5]" />
                       <span>Tambah Data Jualan (+1)</span>
                     </div>
                   </motion.div>
@@ -328,7 +343,7 @@ export default function InputKilatDanMenu() {
               className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full"
             >
               {/* Form Input */}
-              <div className="lg:col-span-4 bg-white border border-neutral-100 p-8 rounded-[2.5rem] flex flex-col gap-5 text-left shadow-[0_4px_24px_rgba(0,0,0,0.01)]">
+              <div className="lg:col-span-4 bg-white border border-neutral-100 p-6 md:p-8 rounded-[2rem] flex flex-col gap-5 text-left shadow-[0_4px_24px_rgba(0,0,0,0.01)]">
                 <div>
                   <h3 className="text-sm font-semibold text-[#4A3B32]">
                     {editingId ? "Ubah Varian Menu" : "Tambah Varian Baru"}
@@ -367,7 +382,7 @@ export default function InputKilatDanMenu() {
                   <div className="flex flex-col gap-2 mt-2">
                     <Button
                       type="submit"
-                      className="w-full h-11 bg-[#8C6239] text-white text-xs font-medium rounded-xl flex items-center justify-center gap-2"
+                      className="w-full h-11 bg-[#8C6239] hover:bg-[#734F2E] text-white text-xs font-medium rounded-xl flex items-center justify-center gap-2 shadow-sm"
                     >
                       {editingId ? <Save size={14} /> : <Plus size={14} />}
                       <span>
@@ -381,7 +396,6 @@ export default function InputKilatDanMenu() {
                         onClick={() => {
                           setEditingId(null);
                           setNamaInput("");
-                          // setFileI(""); // Removed or commented out as setFileI is not defined
                           setHargaInput("");
                         }}
                         className="w-full h-11 text-xs rounded-xl"
@@ -394,18 +408,18 @@ export default function InputKilatDanMenu() {
               </div>
 
               {/* List Data */}
-              <div className="lg:col-span-8 flex flex-col gap-4 w-full">
+              <div className="lg:col-span-8 flex flex-col gap-3.5 w-full">
                 {menuList.map((item) => (
                   <div
                     key={item.id}
-                    className="w-full bg-white border border-neutral-100 rounded-2xl p-6 flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)] text-left hover:border-[#8C6239]/10 transition-all"
+                    className="w-full bg-white border border-neutral-100 rounded-2xl p-5 flex items-center justify-between shadow-[0_2px_12px_rgba(0,0,0,0.01)] text-left hover:border-[#8C6239]/10 transition-all"
                   >
                     <div className="flex items-center gap-4">
                       <div className="p-3 bg-[#8C6239]/5 text-[#8C6239] rounded-xl">
-                        <Utensils size={18} />
+                        <Utensils size={16} />
                       </div>
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-sm font-semibold text-[#4A3B32]">
+                        <span className="text-xs sm:text-sm font-semibold text-[#4A3B32]">
                           {item.nama}
                         </span>
                         <span className="text-[11px] text-[#8C6239] font-mono mt-0.5">
@@ -420,13 +434,13 @@ export default function InputKilatDanMenu() {
                           setNamaInput(item.nama);
                           setHargaInput(item.harga.toString());
                         }}
-                        className="p-2.5 text-neutral-400 hover:text-[#8C6239] rounded-lg transition-colors"
+                        className="p-2 text-neutral-400 hover:text-[#8C6239] rounded-lg transition-colors"
                       >
                         <Edit3 size={14} />
                       </button>
                       <button
                         onClick={() => handleDeleteMenu(item.id)}
-                        className="p-2.5 text-neutral-400 hover:text-red-500 rounded-lg transition-colors"
+                        className="p-2 text-neutral-400 hover:text-red-500 rounded-lg transition-colors"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -440,28 +454,104 @@ export default function InputKilatDanMenu() {
       </div>
 
       {/* SAFETY BAR CONTROL: BUTTON UNDO GLOBAL UNLIMITED */}
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-4">
         <Button
           disabled={historyStack.length === 0}
           onClick={handleGlobalUndo}
           variant="outline"
-          className="border-neutral-200 text-neutral-500 hover:text-[#8C6239] hover:bg-[#8C6239]/5 rounded-full px-8 py-6 text-xs font-medium transition-all flex items-center gap-2.5 disabled:opacity-30"
+          className="border-neutral-200 text-neutral-500 hover:text-[#8C6239] hover:bg-[#8C6239]/5 rounded-full px-7 py-5.5 text-xs font-medium transition-all flex items-center gap-2 disabled:opacity-30"
         >
-          <RotateCcw size={14} />
+          <RotateCcw size={13} />
           <span>Pulihkan Perubahan Terakhir ({historyStack.length})</span>
         </Button>
       </div>
 
-      {/* SNACKBAR NOTIFIKASI OTOMATIS */}
+      {/* ====================================================================== */}
+      {/* MODAL POP-UP DIALOG KONFIRMASI (Anti-Salah Klik & Lembut) */}
+      {/* ====================================================================== */}
+      <AnimatePresence>
+        {confirmModal.isOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Latar Belakang Overlay Buram Halus */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() =>
+                setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+              }
+              className="absolute inset-0 bg-black/15 backdrop-blur-sm"
+            />
+
+            {/* Kartu Konten Dialog Konfirmasi */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ type: "spring", stiffness: 350, damping: 26 }}
+              className="w-full max-w-xs bg-white border border-neutral-100/90 rounded-[2rem] p-6 shadow-[0_20px_50px_rgba(0,0,0,0.06)] relative z-10 text-left flex flex-col gap-4 text-[#4A3B32]"
+            >
+              <div className="flex items-start gap-3">
+                <div
+                  className={`p-2.5 rounded-xl shrink-0 ${confirmModal.type === "increment" ? "bg-[#8C6239]/10 text-[#8C6239]" : "bg-red-50 text-red-500"}`}
+                >
+                  {confirmModal.type === "increment" ? (
+                    <HelpCircle size={16} />
+                  ) : (
+                    <Trash2 size={16} />
+                  )}
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <h4 className="text-sm font-bold tracking-wide">
+                    Konfirmasi Pesanan?
+                  </h4>
+                  <p className="text-[11px] text-neutral-400 font-light leading-relaxed">
+                    {confirmModal.type === "increment"
+                      ? `Apakah Abah ingin mencatatkan penambahan 1 porsi untuk "${confirmModal.label}"?`
+                      : `Apakah Abah yakin ingin mengosongkan seluruh hitungan "${confirmModal.label}" hari ini?`}
+                  </p>
+                </div>
+              </div>
+
+              {/* Kelompok Aksi Tombol */}
+              <div className="flex items-center gap-2 mt-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() =>
+                    setConfirmModal((prev) => ({ ...prev, isOpen: false }))
+                  }
+                  className="flex-1 h-10 text-[11px] font-medium rounded-xl border-neutral-200 text-neutral-400 hover:text-neutral-600 transition-colors"
+                >
+                  Batal
+                </Button>
+                <Button
+                  type="button"
+                  onClick={handleExecuteAction}
+                  className={`flex-1 h-10 text-[11px] font-medium rounded-xl text-white shadow-sm transition-colors ${
+                    confirmModal.type === "increment"
+                      ? "bg-[#8C6239] hover:bg-[#734F2E]"
+                      : "bg-red-500 hover:bg-red-600"
+                  }`}
+                >
+                  Ya, Setuju
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* SNACKBAR NOTIFIKASI TOAST AUTOMATIC */}
       <AnimatePresence>
         {notification && (
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed bottom-8 right-8 z-50 bg-[#4A3B32] text-white px-6 py-4 rounded-xl shadow-lg flex items-center gap-3 text-xs font-medium tracking-wide"
+            className="fixed bottom-24 md:bottom-8 right-8 z-50 bg-[#4A3B32] text-white px-5 py-3.5 rounded-xl shadow-lg flex items-center gap-3 text-xs font-medium tracking-wide"
           >
-            <CheckCircle2 size={16} className="text-emerald-400" />
+            <CheckCircle2 size={15} className="text-emerald-400 shrink-0" />
             <span>{notification}</span>
           </motion.div>
         )}
