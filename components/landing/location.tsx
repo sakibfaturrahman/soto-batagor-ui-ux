@@ -1,251 +1,94 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion, Variants, AnimatePresence } from "framer-motion";
-import { Search, CheckCircle2, AlertCircle, Utensils } from "lucide-react";
-import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+import { MapPin } from "lucide-react";
 
-// Data rekomendasi menu utama Abah Dadan
-const daftarMenuAbah = ["Satu Porsi Penuh", "Setengah Porsi"];
-
-export default function Navbar() {
-  const router = useRouter();
-  const searchContainerRef = useRef<HTMLDivElement>(null);
-
-  // State manajemen data interaksi pencarian
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filteredRecommendations, setFilteredRecommendations] =
-    useState<string[]>(daftarMenuAbah);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [alertStatus, setAlertStatus] = useState<{
-    show: boolean;
-    success: boolean;
-    message: string;
-  }>({
-    show: false,
-    success: false,
-    message: "",
-  });
-
-  // Efek Kombinasi Tombol Rahasia: Masuk panel login (Ctrl + Alt + A)
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.altKey && event.key.toLowerCase() === "a") {
-        event.preventDefault();
-        router.push("/admin/login");
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [router]);
-
-  // Efek Deteksi Klik di Luar Komponen untuk Menutup Dropdown Keamanan
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        searchContainerRef.current &&
-        !searchContainerRef.current.contains(event.target as Node)
-      ) {
-        setIsDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Filter Data Rekomendasi Secara Real-Time Mengikuti Ketikan Pengguna
-  useEffect(() => {
-    const queryClean = searchQuery.trim().toLowerCase();
-    if (queryClean === "") {
-      setFilteredRecommendations(daftarMenuAbah);
-    } else {
-      const filtered = daftarMenuAbah.filter((menu) =>
-        menu.toLowerCase().includes(queryClean),
-      );
-      setFilteredRecommendations(filtered);
-    }
-  }, [searchQuery]);
-
-  // Fungsi Pemicu Alert Notifikasi Halus di Sudut Layar
-  const triggerAlert = (success: boolean, message: string) => {
-    setAlertStatus({ show: true, success, message });
-    setTimeout(() => {
-      setAlertStatus((prev) => ({ ...prev, show: false }));
-    }, 2500);
-  };
-
-  // Fungsi Eksekusi ketika Item Rekomendasi Diklik
-  const handleSelectMenu = (menuName: string) => {
-    setSearchQuery(menuName);
-    setIsDropdownOpen(false);
-    triggerAlert(true, `Menu "${menuName}" Tersedia! Mengarahkan Halaman...`);
-
-    // Alihkan navigasi langsung menuju section target di landing page
-    router.push("#komponen");
-  };
-
-  // Fungsi Pencarian Manual saat Pengguna Menekan Tombol Enter
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!searchQuery.trim()) {
-      triggerAlert(
-        false,
-        "Silakan masukkan kata kunci pencarian terlebih dahulu",
-      );
-      return;
-    }
-
-    // Melakukan pencarian fleksibel (mencocokkan kata kunci sebagian)
-    const matchedMenu = daftarMenuAbah.find((menu) =>
-      menu.toLowerCase().includes(searchQuery.toLowerCase().trim()),
-    );
-
-    if (matchedMenu) {
-      setSearchQuery(matchedMenu);
-      triggerAlert(
-        true,
-        `Menu "${matchedMenu}" Ditemukan! Mengarahkan Halaman...`,
-      );
-      setIsDropdownOpen(false);
-      router.push("#komponen");
-    } else {
-      triggerAlert(
-        false,
-        `Menu "${searchQuery}" Belum Tersedia Untuk Hari Ini`,
-      );
-    }
-  };
-
-  // Varian Animasi Pemuatan Navbar Utama
-  const navbarVariants: Variants = {
-    hidden: { y: -20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
-    },
-  };
-
+export default function Location() {
   return (
-    <>
-      <motion.header
-        className="fixed top-0 left-0 right-0 z-50 w-full flex justify-center p-4 md:p-6 font-sans pointer-events-none"
-        initial="hidden"
-        animate="visible"
-        variants={navbarVariants}
-      >
-        {/* Kontainer Utama Box Navbar */}
-        <div className="w-full max-w-7xl bg-white/90 backdrop-blur-md rounded-full px-6 py-3.5 flex items-center justify-between shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-neutral-100 pointer-events-auto relative">
-          {/* SISI KIRI: Identitas Brand Usaha */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <span className="text-sm sm:text-base font-black tracking-wide text-[#4A3B32] group-hover:text-[#8C6239] transition-colors">
-              Batagor Abah
-            </span>
-          </Link>
-
-          {/* SISI TENGAH: Jajaran Menu Navigasi Landing Page */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-10 mx-4">
-            {[
-              { name: "Beranda", href: "#beranda" },
-              { name: "Tentang", href: "#tentang" },
-              { name: "Keunikan", href: "#keunikan" },
-              { name: "Menu", href: "#komponen" },
-              { name: "Ulasan", href: "#ulasan" },
-            ].map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-xs lg:text-sm font-medium text-neutral-500 hover:text-[#8C6239] transition-colors relative py-1"
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-
-          {/* SISI KANAN: Kontainer Formulir Pencarian Komplit */}
-          <div
-            className="flex items-center gap-4 shrink-0"
-            ref={searchContainerRef}
-          >
-            <div className="relative w-44 sm:w-56 lg:w-64">
-              <form onSubmit={handleSearchSubmit} className="w-full">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400 z-10" />
-                <Input
-                  type="text"
-                  placeholder="Cari varian menu..."
-                  value={searchQuery}
-                  onFocus={() => setIsDropdownOpen(true)}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-1.5 h-9 w-full rounded-full bg-neutral-50/60 border-neutral-200/60 focus-visible:ring-[#8C6239]/20 focus-visible:border-[#8C6239] text-xs text-[#4A3B32] font-normal placeholder:text-neutral-400 relative z-10"
-                />
-              </form>
-
-              {/* DROPDOWN MENU REKOMENDASI (Ditempel Mutlak Di Bawah Input Field) */}
-              <AnimatePresence>
-                {isDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 12, scale: 0.97 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.97 }}
-                    transition={{ type: "spring", stiffness: 450, damping: 30 }}
-                    className="absolute top-11 right-0 left-0 bg-white border border-neutral-100 rounded-2xl p-1.5 shadow-[0_16px_36px_rgba(0,0,0,0.05)] z-50 flex flex-col max-h-56 overflow-y-auto"
-                  >
-                    {/* Label Kategori */}
-                    <div className="px-3 py-2 text-[10px] font-semibold text-neutral-400 uppercase tracking-wider border-b border-neutral-50 mb-1 text-left">
-                      Rekomendasi Menu
-                    </div>
-
-                    {/* Rendering Daftar Pilihan */}
-                    {filteredRecommendations.length > 0 ? (
-                      filteredRecommendations.map((menu, idx) => (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => handleSelectMenu(menu)}
-                          className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs font-medium text-neutral-600 hover:text-[#8C6239] hover:bg-[#8C6239]/5 rounded-xl transition-all text-left"
-                        >
-                          <Utensils
-                            size={12}
-                            className="text-neutral-400 shrink-0"
-                          />
-                          <span>{menu}</span>
-                        </button>
-                      ))
-                    ) : (
-                      <div className="px-3 py-4 text-xs text-neutral-400 font-light text-center">
-                        Menu tidak ditemukan
-                      </div>
-                    )}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
+    <section
+      id="lokasi"
+      className="w-full py-20 bg-[#FDFBF7] text-[#4A3B32] font-sans select-none"
+    >
+      <div className="w-full max-w-7xl mx-auto px-4 md:px-8 flex flex-col gap-12">
+        {/* HEADER SECTION */}
+        <div className="text-center max-w-xl mx-auto flex flex-col gap-2">
+          <span className="text-[11px] font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-4 py-1.5 rounded-full w-fit mx-auto">
+            Lokasi Warung
+          </span>
+          <h2 className="text-2xl md:text-3xl font-bold tracking-wide">
+            Kunjungi Batagor Abah
+          </h2>
+          <p className="text-xs text-neutral-400 font-light leading-relaxed">
+            Nikmati kelezatan batagor tahu sutra asli yang renyah dan hangat
+            langsung di lokasi strategis kami.
+          </p>
         </div>
-      </motion.header>
 
-      {/* POP-UP SISTEM NOTIFIKASI LAYAR UTAMA */}
-      <AnimatePresence>
-        {alertStatus.show && (
+        {/* AREA KONTEN GRID UTAMA */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch w-full">
+          {/* SISI KIRI: INFORMASI DETIL ALAMAT (5 Kolom) */}
           <motion.div
-            initial={{ opacity: 0, y: 24, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ type: "spring", stiffness: 350, damping: 28 }}
-            className="fixed bottom-6 right-6 z-50 bg-[#4A3B32] text-white px-5 py-4 rounded-2xl shadow-xl border border-white/5 flex items-center gap-3 text-xs font-medium tracking-wide"
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 200, damping: 22 }}
+            className="lg:col-span-5 bg-white border border-neutral-100 p-8 rounded-[2rem] shadow-[0_4px_24px_rgba(0,0,0,0.01)] flex flex-col justify-between text-left gap-8"
           >
-            {alertStatus.success ? (
-              <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-            ) : (
-              <AlertCircle size={16} className="text-amber-400 shrink-0" />
-            )}
-            <span>{alertStatus.message}</span>
+            <div className="flex flex-col gap-6">
+              <div className="p-3.5 bg-[#8C6239]/10 text-[#8C6239] rounded-2xl w-fit">
+                <MapPin size={22} className="stroke-[1.8]" />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <h3 className="text-lg font-bold tracking-wide">
+                  Batagor dan Teh Manis Abah Gerbang Unper Tasikmalaya
+                </h3>
+                <p className="text-xs text-neutral-500 font-light leading-relaxed">
+                  Batagor Dan Teh Manis Abah terletak tepat di area gerbang
+                  Universitas Perjuangan, memudahkan para mahasiswa dan pencinta
+                  kuliner lokal untuk singgah beristirahat.
+                </p>
+              </div>
+            </div>
+
+            {/* Kotak Detail Jam & Alamat Ringkas */}
+            <div className="flex flex-col gap-3 border-t border-neutral-50 pt-6 font-medium text-xs text-neutral-400">
+              <div className="flex justify-between items-center">
+                <span>Alamat Lengkap</span>
+                <span className="text-[#4A3B32] font-semibold">
+                  Jl. Peta No.39, Kahuripan, Kec. Tawang, Kab. Tasikmalaya, Jawa
+                  Barat 46115
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Jam Operasional</span>
+                <span className="text-[#8C6239] font-semibold">
+                  10:00 - 22:00 WIB
+                </span>
+              </div>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+
+          {/* SISI KANAN: EMBED GOOGLE MAPS RESPONSIF (7 Kolom) */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: "spring", stiffness: 200, damping: 22 }}
+            className="lg:col-span-7 w-full h-[350px] lg:h-auto min-h-[350px] rounded-[2rem] overflow-hidden border border-neutral-100 shadow-[0_4px_24px_rgba(0,0,0,0.01)] relative"
+          >
+            {/* Menggunakan tag iframe maps milik Abah dengan integrasi class tailwind w-full h-full */}
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15828.019449707232!2d108.2245441!3d-7.3533488!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6f57a19d277229%3A0x36517c1edca0310d!2sBatagor%20dan%20Teh%20Manis%20Abah%20Gerbang%20Unper%20Tasik!5e0!3m2!1sid!2sid!4v1783087100272!5m2!1sid!2sid"
+              className="absolute inset-0 w-full h-full"
+              style={{ border: 0 }}
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+            />
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 }
