@@ -377,7 +377,7 @@ export default function LaporanFinancePro() {
   };
 
   return (
-    <div className="flex flex-col gap-8 pb-28 md:pb-16 font-sans select-none text-left px-4 md:px-8 mt-20 md:mt-26 w-full max-w-7xl mx-auto">
+    <div className="flex flex-col gap-8 pb-28 md:pb-16 font-sans select-none text-left px-4 md:px-8 mt-5 md:mt-26 w-full max-w-7xl mx-auto">
       {/* ====================================================================== */}
       {/* 1. SECTION HEADER & PANEL KONTROL FILTER DATA (PRESISE & SEJAJAR) */}
       {/* ====================================================================== */}
