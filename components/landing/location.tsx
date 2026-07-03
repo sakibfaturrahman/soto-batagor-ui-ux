@@ -12,9 +12,6 @@ export default function Location() {
       <div className="w-full max-w-7xl mx-auto px-4 md:px-8 flex flex-col gap-12">
         {/* HEADER SECTION */}
         <div className="text-center max-w-xl mx-auto flex flex-col gap-2">
-          <span className="text-[11px] font-semibold text-[#8C6239] tracking-wider uppercase bg-[#8C6239]/10 px-4 py-1.5 rounded-full w-fit mx-auto">
-            Lokasi Warung
-          </span>
           <h2 className="text-2xl md:text-3xl font-bold tracking-wide">
             Kunjungi Batagor Abah
           </h2>
